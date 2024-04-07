@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "602307378685",
+    "project_id": "puncture-8ed62",
+    "storage_bucket": "puncture-8ed62.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:602307378685:android:f6915c0a8857adf490ed94",
+        "android_client_info": {
+          "package_name": "com.example.garage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_iUMkmc4iULkDkD3LdEl8FQtIJjifjcY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
