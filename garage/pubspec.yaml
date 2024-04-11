@@ -53,6 +53,7 @@ dependencies:
   firebase_auth: ^4.18.0
   cloud_firestore: ^4.15.10
   fpdart: ^1.1.0
+  flutter_native_splash: ^2.4.0
  
 
 
@@ -119,4 +120,12 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
 
-
+flutter_native_splash:
+  color: "#faf9f9"
+  image: assets/images/logo/splash1.png 
+  android_12:
+    color: "#faf9f9"
+  android: true
+  ios: true
+  android_gravity: center 
+  fullscreen: true

@@ -71,31 +71,44 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  Future<Either<Fail, bool>> RedSendVerificationEmail() {
-    // TODO: implement RedSendVerificationEmail
-    throw UnimplementedError();
+  Future<Either<Fail, bool>> RedSendVerificationEmail() async {
+    try {
+      final result = await user.ReSendVerificationEmail();
+      return right(result);
+    } on Exp catch (e) {
+      return left(Fail(exp: e));
+    }
   }
 
   @override
-  Future<Either<Fail, bool>> SendVerificationEmail() {
-    // TODO: implement SendVerificationEmail
-    throw UnimplementedError();
+  Future<Either<Fail, bool>> SendVerificationEmail() async {
+    try {
+      final result = await user.SendVerificationEmail();
+      return right(result);
+    } on Exp catch (e) {
+      return left(Fail(exp: e));
+    }
   }
 
   @override
-  Future<Either<Fail, bool>> isverified() {
-    // TODO: implement isverified
-    throw UnimplementedError();
+  Future<Either<Fail, bool>> isverified() async {
+    try {
+      final result = await user.isverified();
+
+      return right(result);
+    } on Exp catch (e) {
+      return left(Fail(exp: e));
+    }
   }
 
   @override
   Future<Either<Fail, bool>> islogedin() async {
     try {
       final result = await user.islogedIn();
-      if (result) {
-        right(result);
+      if (result == true) {
+        return right(result);
       } else {
-        right(false);
+        return right(false);
       }
     } on Exp catch (e) {
       return left(Fail(exp: e));

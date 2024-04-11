@@ -96,7 +96,7 @@ class _SlectScreen extends State<StatefulWidget> {
                                 borderRadius: BorderRadius.circular(40),
                               ),
                               height: 350,
-                              width: 250,
+                              width: 232,
                               child: Stack(children: [
                                 PageView.builder(
                                   controller: _pageController,
