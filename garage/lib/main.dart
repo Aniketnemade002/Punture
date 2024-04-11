@@ -1,85 +1,92 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:garage/Fresh.dart';
 import 'package:garage/app.dart';
 import 'package:garage/constant/constant.dart';
 import 'package:garage/constant/constant.dart ' as c;
-import 'package:garage/core/Validations/connectivity.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'package:bloc/bloc.dart';
 
-const storage = FlutterSecureStorage(
-    iOptions: IOSOptions(accountName: 'garage_application'),
-    aOptions: AndroidOptions(encryptedSharedPreferences: true));
+final _storage = storage;
 void main() async {
-//   await Permission.locationWhenInUse.request();
-//   await Permission.notification.request();
-//   await Permission.photos.request();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
-//   // Obtain shared preferences.
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  WidgetsFlutterBinding.ensureInitialized();
+  //-------------------------------------------------------------------------------
+  //permission
 
-//   // on first run geet get fcm instance  (Shared prefrence)
+  await Permission.locationWhenInUse.request();
+  await Permission.notification.request();
 
-//   //  String? token = await FirebaseMessaging.instance.getToken();
-//   //then faterloging
+// -----------------------------------------------------------------------------------
+//initialisation
 
-// //   Future<void> saveTokenToDatabase(String token) async {
-// //   // Assume user is logged in for this example
-// //   String userId = FirebaseAuth.instance.currentUser.uid;
+  if (await Permission.notification.isGranted) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    await FirebaseMessaging.instance.requestPermission(provisional: true);
 
-// //   await FirebaseFirestore.instance
-// //     .collection('users')
-// //     .doc(userId)
-// //     .update({
-// //       'tokens': FieldValue.arrayUnion([token]),
-// //     });
-// // }
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-//   // upload to fire store of specifc UID
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+    print('User granted permission: ${settings.authorizationStatus}');
 
-//   await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform,
-//   );
-//   // FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenToDatabase);
+    token = await FirebaseMessaging.instance.getToken() ?? '';
+    print("----------------------------Fcm Tocken $token ");
+    pref = await SharedPreferences.getInstance();
 
-  // final pref = await SharedPreferences.getInstance();
+    // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  pref = await SharedPreferences.getInstance();
-
-//     final keysToEliminate = ["jwt", "user", "isProfileCompleted"];
-//   if (preferences.getBool('first_run') ?? true) {
-//     print("Inside first time delete");
-//     await Future.wait(keysToEliminate.map((key) => storage.delete(key: key)));
-//     preferences.setBool('first_run', false);
-//     preferences.setString('language', 'en');
-//   }
-//   print("Calling main app");
-
-//   String? isProfileCompleted = await storage.read(key: 'isProfileCompleted');
-//   String? language = preferences.getString('language');
-  isuser = null;
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        scaffoldMessengerKey: scaffoldMessengerKey,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Kcolor.bg),
-          useMaterial3: true,
-        ),
-        home: SelectScreen());
+    // await AppNotifications.init();
   }
+
+  //-----------------------------------------------------------------------------
+  // Checking  firstrun // UserEntity // Uid // isProfileCompleted
+
+  final keysToEliminate = ["Uid", "S_UserEntity", "isProfileCompleted"];
+
+  if (pref?.getBool('FirstRun') ?? true) {
+    print("Inside first time delete");
+    await Future.wait(keysToEliminate.map((key) => _storage.delete(key: key)));
+  }
+
+  UserUid = await _storage.read(key: 'Uid') ?? '';
+  final String? Uid = UserUid;
+  isProfileCompleted = await _storage.read(key: 'isProfileCompleted') ?? '';
+  final who = await _storage.read(key: 'S_UserEntity');
+
+  if (who == 'user') {
+    isuser = true;
+  } else if (who == 'owner') {
+    isuser = false;
+  } else {
+    isuser = null;
+  }
+
+  print("Calling main app");
+
+  runApp(RestartWidget(
+      child: app(
+    WhoUid: Uid,
+    userWho: who,
+    UserFcmToken: token,
+    UserisProfileCompleted: isProfileCompleted,
+  )));
 }
 
 class RestartWidget extends StatefulWidget {
@@ -109,64 +116,3 @@ class _RestartWidgetState extends State<RestartWidget> {
     );
   }
 }
-
-//first run ==true
-// choose who are u
-//OnBording Screen
-//login
-
-// while routing create is user or owner path at initial point and rout pages according to
-
-// create slots as per convinience of owner (get last slot number(SID) from db and + 1 it  and add timing )
-
-// edit / Delete funcationality need to add for slot
-
-// note : at the time of user creatin store that uid in firebase  as a uniqueid
-// 2. slot id
-// 1. search all garages with vilage
-// 2.now get unique id of specific owner  add create booking
-
-// as booking request fire remove booking slot from owners avilabel and reduce the count
-
-// 3. add booking in booking collecction  and return the uid of booking
-
-//  ( final refnewbooking = add thebooking  )
-//   docId= refnewbooking.id
-
-// and add this docID in both garage uid and user uid aswells as i the history
-
-//https://www.google.com/maps/dir/?api=1&destination={lat},{lon}
-
-// booking flow
-
-// add button
-
-// open popup window  add  location
-
-//  redirect ot page which has list of garages
-//  choose on garages has locations and slot total slot availabes
-
-//  open srollable bootom sheet on choose it will open booking comfermation pop up
-// add the User  fcm token in booking
-//  after comfirmation show rorating animmation afer done showw booking Done animation such as google payment Done
-
-//  at the slot booked section  at owner show the Release button
-
-//   after clicking it
-
-//      remove the booking from booking array in both user and owner with repective id
-//      and update write all funcanatlitys in try catch
-
-//take id of respective fcm tocken  and send the massage that Bingoo !! your vehical No{MH**** } is releasd go and take you ride to your Home
-
-// show Your profile name  at top for garage garage name
-
-// Write specific funtionality to retrive respective ids for owner and user
-
-// create the wallet functionality
-// user need to add money in  wallet
-// and at the booking wallet will update with new price
-//and owner will get money
-// Slide to act button
-
-// about page must be there dont forgett

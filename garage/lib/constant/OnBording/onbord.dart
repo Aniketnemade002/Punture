@@ -149,7 +149,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 child: TextButton(
                   onPressed: () async {
                     if (_currentPage == widget.pages.length - 1) {
-                      await pref!.setBool('onBord', false);
+                      await pref!.setBool('FirstRun', false);
 
                       isuser == true
                           ? Navigator.pushAndRemoveUntil(

@@ -155,7 +155,7 @@ class _SlectScreen extends State<StatefulWidget> {
                           await pref!.setString(
                               'UserEntity', isuser == true ? 'user' : 'owner');
                           isuser == true
-                              ? pref?.getBool('onBord') ?? true
+                              ? pref?.getBool('FirstRun') ?? true
                                   ? Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -169,7 +169,7 @@ class _SlectScreen extends State<StatefulWidget> {
                                         builder: (context) => Userlogin(),
                                       ),
                                     )
-                              : await pref?.getBool('onBord') ?? true
+                              : await pref?.getBool('FirstRun') ?? true
                                   ? Navigator.push(
                                       context,
                                       MaterialPageRoute(

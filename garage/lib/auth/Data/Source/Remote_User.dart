@@ -103,7 +103,9 @@ class UserDataSourceImpl implements UserDataSource {
     try {
       final Uid = await fdb.currentUser!.uid;
 
-      await db.collection(Who).doc(Uid).set({'Fcm': token});
+      await db.collection(Who).doc(Uid).set({
+        'Fcm': FieldValue.arrayUnion([token])
+      });
     } catch (e) {
       throw Exp(e);
     }

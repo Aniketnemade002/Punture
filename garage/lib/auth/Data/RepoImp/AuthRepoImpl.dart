@@ -17,9 +17,7 @@ enum AuthenticationStatus {
 
 class AuthRepoImpl implements AuthRepo {
   final UserDataSourceImpl user = UserDataSourceImpl();
-  final _storage = const FlutterSecureStorage(
-      iOptions: IOSOptions(accountName: 'bound_storage_service'),
-      aOptions: AndroidOptions(encryptedSharedPreferences: true));
+  final _storage = storage;
 
   final _controller = StreamController<AuthenticationStatus>();
   Stream<AuthenticationStatus> get status async* {
@@ -36,9 +34,9 @@ class AuthRepoImpl implements AuthRepo {
 
       if (loginResponce != null) {
         await _storage.write(key: 'Uid', value: loginResponce.Uid);
+        UserUid = loginResponce.Uid;
         await _storage.write(
             key: 'LoginInfo', value: json.encode(loginResponce));
-
         if (loginResponce.isverified) {
           UserUid = loginResponce.Uid;
           if (loginResponce.isProfileCompleted) {
