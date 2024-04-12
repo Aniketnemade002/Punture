@@ -33,6 +33,8 @@ class AuthRepoImpl implements AuthRepo {
 
       if (loginResponce != null) {
         await _storage.write(key: 'Uid', value: loginResponce.Uid);
+        _storage.write(
+            key: 'S_UserEntity', value: isuser == true ? 'USER' : 'OWNER');
         UserUid = loginResponce.Uid;
         await _storage.write(
             key: 'LoginInfo', value: json.encode(loginResponce));
@@ -56,7 +58,7 @@ class AuthRepoImpl implements AuthRepo {
   @override
   Future<void> Logout() async {
     try {
-      user.Logout();
+      await user.Logout();
       await _storage.deleteAll();
       _controller.add(AuthenticationStatus.unauthenticated);
     } on Exp catch (e) {
@@ -65,34 +67,25 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  Future<Either<Fail, bool>> RedSendVerificationEmail() async {
-    try {
-      final result = await user.ReSendVerificationEmail();
-      return right(result);
-    } on Exp catch (e) {
-      return left(Fail(exp: e));
-    }
-  }
-
-  @override
-  Future<Either<Fail, bool>> SendVerificationEmail() async {
+  Future<bool?> SendVerificationEmail() async {
     try {
       final result = await user.SendVerificationEmail();
-      return right(result);
+      return result;
     } on Exp catch (e) {
-      return left(Fail(exp: e));
+      Fail(exp: e);
     }
   }
 
   @override
-  Future<Either<Fail, bool>> isverified() async {
+  Future<bool> isverified() async {
     try {
       final result = await user.isverified();
 
-      return right(result);
+      return result;
     } on Exp catch (e) {
-      return left(Fail(exp: e));
+      Fail(exp: e);
     }
+    return false;
   }
 
   @override

@@ -12,9 +12,11 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:garage/EmailVerify/Presentaion/bloc/email_verify_bloc.dart';
 import 'package:garage/Fresh.dart';
 import 'package:garage/auth/Data/RepoImp/AuthRepoImpl.dart';
 import 'package:garage/auth/Data/RepoImp/UserRepoImpl.dart';
+import 'package:garage/auth/singup/Presentaion/bloc/singup_bloc.dart';
 import 'package:garage/constant/constant.dart';
 import 'package:garage/core/Validations/connectivity/connectivity_bloc.dart';
 
@@ -76,7 +78,11 @@ class _appState extends State<app> with WidgetsBindingObserver {
     return RepositoryProvider.value(
       value: _authenticationRepository,
       child: MultiBlocProvider(
-          providers: [BlocProvider(create: (_) => ConnectivityBloc())],
+          providers: [
+            BlocProvider(create: (_) => ConnectivityBloc()),
+            BlocProvider(create: (_) => VerificationBloc()),
+            BlocProvider(create: (_) => SignupBloc()),
+          ],
           child: appstart(
             userUid: widget.WhoUid,
             userWho: widget.userWho,
@@ -140,15 +146,12 @@ class _appstartState extends State<appstart> {
             }
 
             if (state.status == ConnectivityStatus.checking) {
-              isinterneconnected = null;
               showSnackbar('No internet connection', false, 1);
             }
             if (state.status == ConnectivityStatus.connected) {
-              isinterneconnected = true;
               showSnackbar('Connected! ', true, 2);
             }
             if (state.status == ConnectivityStatus.disconnected) {
-              isinterneconnected = false;
               showSnackbar('No internet connection', false, 1);
             }
           },

@@ -8,7 +8,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Fail {
   final dynamic exp;
-  Fail({required this.exp});
+  final bool? result;
+  Fail({required this.exp, this.result = false});
 }
 
 class Exp implements Exception {
@@ -21,7 +22,7 @@ class Failure {
 
   Failure({required this.e});
 
-  static String _getErrorMessage(dynamic exception) {
+  static String _getErrorMessage(Exception exception) {
     if (exception is FirebaseAuthException) {
       return _getAuthErrorMessage(exception);
     } else if (exception is FirebaseException) {

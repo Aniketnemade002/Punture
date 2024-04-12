@@ -4,6 +4,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:garage/auth/singup/Presentaion/page/SingUp.dart';
 import 'package:garage/login.dart';
 import 'package:garage/constant/OnBording/onbording.dart';
 import 'package:garage/constant/constant.dart';
@@ -151,44 +152,40 @@ class _SlectScreen extends State<StatefulWidget> {
                       duration: const Duration(milliseconds: 700),
                       child: ElevatedButton(
                         autofocus: true,
-                        onPressed: isinterneconnected == false
-                            ? () {
-                                print(
-                                    "++++++++++++++++++++++++++++++++++++LOST Connection ++++++++++++++++++");
-                              }
-                            : () async {
-                                await pref!.setString('UserEntity',
-                                    isuser == true ? 'user' : 'owner');
-                                isuser == true
-                                    ? pref?.getBool('FirstRun') ?? true
-                                        ? Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const OnBordUser(),
-                                            ),
-                                          )
-                                        : Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => Userlogin(),
-                                            ),
-                                          )
-                                    : await pref?.getBool('FirstRun') ?? true
-                                        ? Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const onBordOwner(),
-                                            ),
-                                          )
-                                        : Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => Userlogin(),
-                                            ),
-                                          );
-                              },
+                        onPressed: () async {
+                          await pref!.setString(
+                              'UserEntity', isuser == true ? 'user' : 'owner');
+                          isuser == true
+                              ? pref?.getBool('FirstRun') ?? true
+                                  ? Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => SignupScreen()
+
+                                          //  OnBordUser(),
+                                          ),
+                                    )
+                                  : Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => SignupScreen(),
+                                      ),
+                                    )
+                              : await pref?.getBool('FirstRun') ?? true
+                                  ? Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const onBordOwner(),
+                                      ),
+                                    )
+                                  : Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => SignupScreen(),
+                                      ),
+                                    );
+                        },
                         child: const SizedBox(
                           height: 25,
                           width: 150,

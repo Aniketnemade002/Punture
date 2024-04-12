@@ -3,10 +3,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:garage/auth/Domain/Eintity/LoginResponse.dart';
 import 'package:garage/core/Error/Error.dart';
 
-abstract interface class AuthRepo {
-  Future<Either<Fail, LoginResponse?>> Login(
+abstract interface class SignUpRepo {
+  Future<Either<Fail, bool>> SingUp(
       {required String email, required String password});
-  Future<Either<Fail, bool>> islogedin();
-  Future<void> Logout();
-  Future<bool> isverified();
 }

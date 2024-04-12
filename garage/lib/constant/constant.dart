@@ -57,7 +57,11 @@ const storage = FlutterSecureStorage(
   // _storage.write(    key: 'isUserVerified',     value: 'yes');
     // _storage.write(    key: 'isProfileCompleted',     value: 'yes');
   // _storage.write(    key: 'LoginInfo',              value: json.encode(loginResponce));
-   // _storage.write(    key: 'S_UserEntity',              value: json.encode(loginResponce));
+   //  _storage.write(    key: 'S_UserEntity',value: isuser == true ? 'USER' : 'OWNER');
+
+
+
+  //  pref!.setString('UserEntity',isuser == true ? 'user' : 'owner')
 
 
 

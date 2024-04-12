@@ -70,9 +70,9 @@ void main() async {
   isProfileCompleted = await _storage.read(key: 'isProfileCompleted') ?? '';
   final who = await _storage.read(key: 'S_UserEntity');
 
-  if (who == 'user') {
+  if (who == 'USER') {
     isuser = true;
-  } else if (who == 'owner') {
+  } else if (who == 'OWNER') {
     isuser = false;
   } else {
     isuser = null;
@@ -106,6 +106,10 @@ class _RestartWidgetState extends State<RestartWidget> {
     setState(() {
       key = UniqueKey();
     });
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => widget.child),
+      (Route<dynamic> route) => false,
+    );
   }
 
   @override
