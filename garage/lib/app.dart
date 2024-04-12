@@ -16,7 +16,7 @@ import 'package:garage/Fresh.dart';
 import 'package:garage/auth/Data/RepoImp/AuthRepoImpl.dart';
 import 'package:garage/auth/Data/RepoImp/UserRepoImpl.dart';
 import 'package:garage/constant/constant.dart';
-import 'package:garage/core/Validations/bloc/connectivity_bloc.dart';
+import 'package:garage/core/Validations/connectivity/connectivity_bloc.dart';
 
 class app extends StatefulWidget {
   const app({
@@ -68,7 +68,6 @@ class _appState extends State<app> with WidgetsBindingObserver {
         // connect();
         break;
       case AppLifecycleState.hidden:
-      // TODO: Handle this case.
     }
   }
 
@@ -141,12 +140,15 @@ class _appstartState extends State<appstart> {
             }
 
             if (state.status == ConnectivityStatus.checking) {
+              isinterneconnected = null;
               showSnackbar('No internet connection', false, 1);
             }
             if (state.status == ConnectivityStatus.connected) {
+              isinterneconnected = true;
               showSnackbar('Connected! ', true, 2);
             }
             if (state.status == ConnectivityStatus.disconnected) {
+              isinterneconnected = false;
               showSnackbar('No internet connection', false, 1);
             }
           },

@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+// GLButton(
+//   onLocationObtained: (GeoPoint geoPoint) {
+//     print("Received GeoPoint: ${geoPoint.latitude}, ${geoPoint.longitude}");
+//     // You can now use this GeoPoint in your Firestore database operations
+//   },
+// )
 
 class GLButton extends StatefulWidget {
+  final Function(GeoPoint)? onLocationObtained;
+
+  GLButton({this.onLocationObtained});
+
   @override
   State<StatefulWidget> createState() => _GLButtonState();
 }
@@ -23,6 +34,8 @@ class _GLButtonState extends State<GLButton> {
       _getLocation();
     } else if (status.isDenied) {
       await Permission.locationWhenInUse.request();
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings(); // Encourage user to manually allow the permission in app settings.
     }
   }
 
@@ -40,6 +53,7 @@ class _GLButtonState extends State<GLButton> {
         double? latitude = _locationData?.latitude;
         double? longitude = _locationData?.longitude;
         if (latitude != null && longitude != null) {
+          widget.onLocationObtained?.call(GeoPoint(latitude, longitude));
           debugPrint('Latitude: $latitude, Longitude: $longitude');
         }
       });
@@ -62,7 +76,7 @@ class _GLButtonState extends State<GLButton> {
             child: Row(
               children: [
                 Icon(Icons.thumb_up),
-                Text("location Got !!"),
+                Text("Location obtained!"),
               ],
             ),
           )
@@ -73,7 +87,7 @@ class _GLButtonState extends State<GLButton> {
                     ? const CircularProgressIndicator(
                         color: Colors.white,
                       )
-                    : const Text('Try Again ! '),
+                    : const Text('Try Again!'),
               )
             : ElevatedButton(
                 onPressed: _checkLocationPermission,

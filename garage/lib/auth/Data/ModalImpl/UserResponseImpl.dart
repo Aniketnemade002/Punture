@@ -1,24 +1,24 @@
 import 'package:garage/auth/Domain/Eintity/LoginResponse.dart';
 
-class UserResponseModal extends LoginResponse {
-  UserResponseModal({
+class LoginResponseModal extends LoginResponse {
+  LoginResponseModal({
     required super.Uid,
     required super.isProfileCompleted,
     required super.isverified,
   });
 
-  factory UserResponseModal.fromJson(Map<String, dynamic> json) {
-    return UserResponseModal(
+  factory LoginResponseModal.fromJson(Map<String, dynamic> json) {
+    return LoginResponseModal(
       isProfileCompleted: json['isprofileCompleted'],
       Uid: json['uid'] ?? '',
       isverified: json['isverified'] ?? '',
     );
   }
-  UserResponseModal copyWith({
+  LoginResponseModal copyWith({
     String? Uid,
     bool? isprofileCompleted,
   }) =>
-      UserResponseModal(
+      LoginResponseModal(
         Uid: Uid ?? this.Uid,
         isProfileCompleted: isProfileCompleted ?? this.isProfileCompleted,
         isverified: isverified ?? this.isverified,

@@ -41,6 +41,7 @@ late bool? GodMode;
 late String? UserUid;
 late String? token;
 late bool? firstRun;
+late bool? isProfileVerified;
 late String? isProfileCompleted;
 
 final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -53,7 +54,8 @@ const storage = FlutterSecureStorage(
 
 //Storage =
   // _storage.write(    key: 'Uid',                    value: loginResponce.Uid);
-  // _storage.write(    key: 'isProfileCompleted',     value: 'yes');
+  // _storage.write(    key: 'isUserVerified',     value: 'yes');
+    // _storage.write(    key: 'isProfileCompleted',     value: 'yes');
   // _storage.write(    key: 'LoginInfo',              value: json.encode(loginResponce));
    // _storage.write(    key: 'S_UserEntity',              value: json.encode(loginResponce));
 

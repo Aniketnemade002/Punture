@@ -19,7 +19,7 @@ abstract interface class UserDataSource {
   Future<void> Logout();
   Future<void> SaveFcmTocken({required String token});
 
-  Future<UserResponseModal?> LogIn({
+  Future<LoginResponseModal?> LogIn({
     required String email,
     required String password,
   });
@@ -31,7 +31,7 @@ class UserDataSourceImpl implements UserDataSource {
   final String Who = isuser == true ? 'USER' : 'OWNER';
 
   @override
-  Future<UserResponseModal?> LogIn(
+  Future<LoginResponseModal?> LogIn(
       {required String email, required String password}) async {
     try {
       final users = await fdb.signInWithEmailAndPassword(
@@ -48,7 +48,7 @@ class UserDataSourceImpl implements UserDataSource {
             await db.collection(Who).doc(Uid).get();
 
         if (snap.exists) {
-          return UserResponseModal.fromJson({
+          return LoginResponseModal.fromJson({
             'uid': Uid,
             'isProfileCompleted': snap['isProfileCompleted'],
             'isverified': isVerified

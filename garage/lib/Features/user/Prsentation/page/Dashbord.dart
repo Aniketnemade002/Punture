@@ -19,22 +19,51 @@ class BottomNavigationDemo extends StatefulWidget {
   _BottomNavigationDemoState createState() => _BottomNavigationDemoState();
 }
 
-class _BottomNavigationDemoState extends State<BottomNavigationDemo> {
+class _BottomNavigationDemoState extends State<BottomNavigationDemo>
+    with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
   bool _isFabVisible = true;
 
   final ScrollController _scrollController = ScrollController();
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _tabController.dispose();
     super.dispose();
+  }
+
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(20),
+          child: Center(
+            child: Text(
+              'Your desired page',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _onScroll() {
@@ -58,28 +87,45 @@ class _BottomNavigationDemoState extends State<BottomNavigationDemo> {
   }
 
   Widget _buildBookingListView() {
-    return ListView.builder(
-      controller: _scrollController,
-      itemCount: 5,
-      itemBuilder: (context, index) {
-        return BookingElevatedContainer(
-          title: 'Booking Item $index',
-          description: 'Booking Description $index',
-          additionalInfo: 'Additional Info $index',
-        );
-      },
+    return Column(
+      children: [
+        TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(text: 'Done'),
+            Tab(text: 'Pending'),
+          ],
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              _buildBookingList('done'), // Pass 'done' to indicate Done tab
+              _buildBookingList(
+                  'pending'), // Pass 'pending' to indicate Pending tab
+            ],
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildHistoryListView() {
+  Widget _buildBookingList(String status) {
     return ListView.builder(
-      controller: _scrollController,
       itemCount: 5,
       itemBuilder: (context, index) {
-        return HistoryElevatedContainer(
-          title: 'History Item $index',
-          description: 'History Description $index',
-          status: 'Status $index',
+        final title =
+            status == 'done' ? 'Done Item $index' : 'Pending Item $index';
+        final description = status == 'done'
+            ? 'Done Description $index'
+            : 'Pending Description $index';
+        final additionalInfo =
+            status == 'done' ? 'Additional Info $index' : 'Pending Info $index';
+
+        return BookingElevatedContainer(
+          title: title,
+          description: description,
+          additionalInfo: additionalInfo,
         );
       },
     );
@@ -111,13 +157,18 @@ class _BottomNavigationDemoState extends State<BottomNavigationDemo> {
         ],
       ),
       floatingActionButton: _isFabVisible
-          ? FloatingActionButton(
-              onPressed: () {
-                // Add functionality for the FAB
-                print('Floating Action Button pressed');
-              },
-              child: Icon(Icons.add),
-              shape: CircleBorder(),
+          ? SizedBox(
+              width: 80,
+              height: 80,
+              child: FittedBox(
+                child: FloatingActionButton(
+                  onPressed: () {
+                    _showBottomSheet(context);
+                  },
+                  child: Icon(Icons.add),
+                  shape: CircleBorder(),
+                ),
+              ),
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -140,27 +191,38 @@ class _BottomNavigationDemoState extends State<BottomNavigationDemo> {
             ListTile(
               title: Text('Profile'),
               onTap: () {
-                // Add functionality for Profile
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: Text('Settings'),
               onTap: () {
-                // Add functionality for Settings
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: Text('Help'),
               onTap: () {
-                // Add functionality for Help
                 Navigator.pop(context);
               },
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildHistoryListView() {
+    return ListView.builder(
+      controller: _scrollController,
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        return HistoryElevatedContainer(
+          title: 'History Item $index',
+          description: 'History Description $index',
+          status: 'Status $index',
+        );
+      },
     );
   }
 }

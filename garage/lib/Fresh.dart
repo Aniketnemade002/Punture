@@ -151,39 +151,44 @@ class _SlectScreen extends State<StatefulWidget> {
                       duration: const Duration(milliseconds: 700),
                       child: ElevatedButton(
                         autofocus: true,
-                        onPressed: () async {
-                          await pref!.setString(
-                              'UserEntity', isuser == true ? 'user' : 'owner');
-                          isuser == true
-                              ? pref?.getBool('FirstRun') ?? true
-                                  ? Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const OnBordUser(),
-                                      ),
-                                    )
-                                  : Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Userlogin(),
-                                      ),
-                                    )
-                              : await pref?.getBool('FirstRun') ?? true
-                                  ? Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const onBordOwner(),
-                                      ),
-                                    )
-                                  : Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Userlogin(),
-                                      ),
-                                    );
-                        },
+                        onPressed: isinterneconnected == false
+                            ? () {
+                                print(
+                                    "++++++++++++++++++++++++++++++++++++LOST Connection ++++++++++++++++++");
+                              }
+                            : () async {
+                                await pref!.setString('UserEntity',
+                                    isuser == true ? 'user' : 'owner');
+                                isuser == true
+                                    ? pref?.getBool('FirstRun') ?? true
+                                        ? Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const OnBordUser(),
+                                            ),
+                                          )
+                                        : Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => Userlogin(),
+                                            ),
+                                          )
+                                    : await pref?.getBool('FirstRun') ?? true
+                                        ? Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const onBordOwner(),
+                                            ),
+                                          )
+                                        : Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => Userlogin(),
+                                            ),
+                                          );
+                              },
                         child: const SizedBox(
                           height: 25,
                           width: 150,

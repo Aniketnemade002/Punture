@@ -12,7 +12,6 @@ import 'package:garage/core/Error/Error.dart';
 enum AuthenticationStatus {
   authenticated,
   unauthenticated,
-  PendingVerification
 }
 
 class AuthRepoImpl implements AuthRepo {
@@ -38,16 +37,13 @@ class AuthRepoImpl implements AuthRepo {
         await _storage.write(
             key: 'LoginInfo', value: json.encode(loginResponce));
         if (loginResponce.isverified) {
-          UserUid = loginResponce.Uid;
-          if (loginResponce.isProfileCompleted) {
-            await _storage.write(key: 'isProfileCompleted', value: 'yes');
-          }
-          _controller.add(AuthenticationStatus.authenticated);
-          return right(loginResponce);
-        } else {
-          _controller.add(AuthenticationStatus.PendingVerification);
-          return right(null);
+          _storage.write(key: 'isUserVerified', value: 'yes');
         }
+        if (loginResponce.isProfileCompleted) {
+          await _storage.write(key: 'isProfileCompleted', value: 'yes');
+        }
+        _controller.add(AuthenticationStatus.authenticated);
+        return right(loginResponce);
       } else {
         _controller.add(AuthenticationStatus.unauthenticated);
         return right(null);
