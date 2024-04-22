@@ -13,6 +13,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:garage/EmailVerify/VerifyPage.dart';
+import 'package:garage/Features/Registration/presentation/OwnerRegisterPages/Pages/OwnerRegisterScreen.dart';
+import 'package:garage/Features/Registration/presentation/OwnerRegisterPages/bloc/owner_register_bloc.dart';
+import 'package:garage/Features/Registration/presentation/UserRegisterpages/Pages/UserRegisterScreen.dart';
+import 'package:garage/Features/Registration/presentation/UserRegisterpages/bloc/user_register_bloc.dart';
+import 'package:garage/Features/owner/Data/RepoImp/MainOwnerRepoImpl.dart';
+import 'package:garage/Features/user/Data/RepoImp/MainUserImpl.dart';
 import 'package:garage/Fresh.dart';
 import 'package:garage/auth/Data/RepoImp/AuthRepoImpl.dart';
 import 'package:garage/auth/Data/RepoImp/UserRepoImpl.dart';
@@ -91,7 +97,9 @@ class _appState extends State<app> with WidgetsBindingObserver {
             BlocProvider(create: (_) => LoginBloc()),
             BlocProvider(
                 create: (_) => AuthBloc(
-                    authenticationRepository: _authenticationRepository))
+                    authenticationRepository: _authenticationRepository)),
+            BlocProvider(create: (_) => OwnerRegisterBloc()),
+            BlocProvider(create: (_) => UserRegisterBloc())
           ],
           child: appstart(
             userUid: widget.WhoUid,
@@ -171,87 +179,132 @@ class _appstartState extends State<appstart> {
         ),
       ],
       child: MaterialApp(
-          scaffoldMessengerKey: scaffoldMessengerKey,
-          title: 'Punture',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Kcolor.bg),
-            useMaterial3: true,
-          ),
-          navigatorKey: _navigatorKey,
-          builder: (context, child) {
-            return BlocListener<AuthBloc, AuthState>(
-              listener: (context, state) async {
-                UserRepoImpl _UserRepo = UserRepoImpl();
-                AuthRepoImpl _auth = AuthRepoImpl();
-                final isLogInResult;
+        scaffoldMessengerKey: scaffoldMessengerKey,
+        title: 'Punture',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Kcolor.bg),
+          useMaterial3: true,
+        ),
+        navigatorKey: _navigatorKey,
+        builder: (context, child) {
+          return BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) async {
+              UserRepoImpl _UserRepo = UserRepoImpl();
+              AuthRepoImpl _auth = AuthRepoImpl();
+              MainOwnerRepoImpl _mainOwnerRepo = MainOwnerRepoImpl();
+              MainUserRepoImpl _mainUserRepo = MainUserRepoImpl();
 
-                if (state.status == AuthenticationStatus.unauthenticated) {
-                  _navigator.push(MaterialPageRoute(
-                      builder: (BuildContext context) => const SelectScreen()));
-                }
+              if (state.status == AuthenticationStatus.unauthenticated) {
+                _navigator.push(MaterialPageRoute(
+                    builder: (BuildContext context) => const SelectScreen()));
+              }
 
-                if (state.status == AuthenticationStatus.unknown) {
-                  final isloggin = await _auth.islogedin();
-                  final isverified = await _auth.isverified();
+              if (state.status == AuthenticationStatus.unknown) {
+                final isloggin = await _auth.islogedin();
+                final isverified = await _auth.isverified();
 
-                  var isLogiinResult;
-                  isloggin.fold(
-                    (l) {
-                      Failure.handle(l.exp);
-                      isLogiinResult == false;
-                    },
-                    (r) => r == true
-                        ? isLogiinResult == true
-                        : isLogiinResult == false,
-                  );
+                var isLogiinResult;
+                isloggin.fold(
+                  (l) {
+                    Failure.handle(l.exp);
+                    isLogiinResult == false;
+                  },
+                  (r) => r == true
+                      ? isLogiinResult == true
+                      : isLogiinResult == false,
+                );
 
-                  FlutterNativeSplash.remove();
+                FlutterNativeSplash.remove();
 
-                  if (isLogiinResult == true) {
-                    if (isverified) {
+                if (isLogiinResult == true) {
+                  if (isverified) {
+                    if (isuser) {
                       if (widget.UserFcmToken != null &&
                           widget.UserFcmToken != '') {
-                        _UserRepo.SaveFcmTocken(
+                        await _UserRepo.SaveFcmTocken(
+                            token: widget.UserFcmToken ?? '');
+
+                        final mainUserResult = await _mainUserRepo.GetUser();
+                        mainUserResult.fold(
+                          (l) {
+                            Failure.handle(l.exp);
+                            _navigator.push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const SelectScreen()));
+                          },
+                          (r) {
+                            if (r!.isProfileCompleted) {
+                              print(
+                                  "===============================  In App======");
+                              _navigator.push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const UserDash(),
+                                ),
+                              );
+                            } else {
+                              _navigator.push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      OwnerRegisterScreen(),
+                                ),
+                              );
+                            }
+                          },
+                        );
+                      }
+                    } else {
+                      if (widget.UserFcmToken != null &&
+                          widget.UserFcmToken != '') {
+                        await _UserRepo.SaveFcmTocken(
                             token: widget.UserFcmToken ?? '');
                       }
 
-                      //
-                      //
-                      //
-                      //
-                      //if (user!.isProfileCompleted == true) {
-                      //   print("===============================  In App======");
-                      //   _navigator.push(MaterialPageRoute(
-                      //       builder: (BuildContext context) =>
-                      //           const UserDash()));
-                      //   ;
-                      // } else {
-                      //   _navigator.push(MaterialPageRoute(
-                      //       builder: (BuildContext context) =>
-                      //           const ProfileBuildPage()));
-                      //
-                      //
-                      //
-                      //
-                      //
-                      //
-                      // }
-                    } else {
-                      _navigator.push(MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              EmailVerificationScreen()));
+                      final mainOwnerResult = await _mainOwnerRepo.GetOwner();
+                      mainOwnerResult.fold(
+                        (l) {
+                          Failure.handle(l.exp);
+                          _navigator.push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const SelectScreen()));
+                        },
+                        (r) {
+                          if (r!.isProfileCompleted) {
+                            print(
+                                "===============================  In App======");
+                            _navigator.push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const UserDash(),
+                              ),
+                            );
+                          } else {
+                            _navigator.push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    UserRegisterScreen(),
+                              ),
+                            );
+                          }
+                        },
+                      );
                     }
                   } else {
                     _navigator.push(MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            const SelectScreen()));
+                            EmailVerificationScreen()));
                   }
+                } else {
+                  _navigator.push(MaterialPageRoute(
+                      builder: (BuildContext context) => const SelectScreen()));
                 }
-              },
-              child: child,
-            );
-          }),
+              }
+            },
+            child: child,
+          );
+        },
+      ),
     ));
   }
 }

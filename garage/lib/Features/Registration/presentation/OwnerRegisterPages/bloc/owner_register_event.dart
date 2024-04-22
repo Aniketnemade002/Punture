@@ -64,7 +64,7 @@ class VillageChanged extends OwnerRegisterEvent {
 }
 
 class GeoLocationChanged extends OwnerRegisterEvent {
-  final GeoPoint geoLocation;
+  final GeoPoint1 geoLocation;
   const GeoLocationChanged(this.geoLocation);
 
   @override

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,11 +42,13 @@ late bool isuser;
 bool isinterneconnected = false;
 late SharedPreferences? pref;
 late bool? GodMode;
-late String? UserUid;
+late String UserUid;
 late String? FCMtoken;
 late bool? firstRun;
 late bool? isProfileVerified;
 late String? isProfileCompleted;
+late GeoPoint? GetgeoPoint;
+late String? GetVillage;
 
 final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 

@@ -56,11 +56,11 @@ class UserRegisterDataSourceImpl implements UserRegisterDataSource {
       final userData = {
         'FCM': fcm,
         'Village': village,
-        'wWallet': wallet,
+        'Wallet': wallet,
         'isProfileCompleted': isProfileCompleted,
         'name': name,
         'Email': email,
-        'Mobile_No': mobileNo,
+        'MobileNo': mobileNo,
         'GeoLocation': geoLocation,
         'Pin': pin,
       };

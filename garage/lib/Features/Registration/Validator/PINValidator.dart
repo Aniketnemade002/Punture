@@ -1,6 +1,6 @@
 import 'package:formz/formz.dart';
 
-enum PINValidationError { empty, invalidFormat, mismatch }
+enum PINValidationError { empty, invalidFormat }
 
 class PIN extends FormzInput<String, PINValidationError> {
   const PIN.pure() : super.pure('');
@@ -19,23 +19,21 @@ class PIN extends FormzInput<String, PINValidationError> {
   }
 }
 
-class ConfirmPIN extends FormzInput<String, PINValidationError> {
+enum ConfirmPINValidationError { empty, mismatch }
+
+class ConfirmPIN extends FormzInput<String, ConfirmPINValidationError> {
   final String originalPIN;
 
   const ConfirmPIN.pure({this.originalPIN = ''}) : super.pure('');
   const ConfirmPIN.dirty({this.originalPIN = '', String value = ''})
       : super.dirty(value);
 
-  static final _pinRegExp = RegExp(r'^\d{4}$');
-
   @override
-  PINValidationError? validator(String? value) {
+  ConfirmPINValidationError? validator(String? value) {
     if (value == null || value.isEmpty) {
-      return PINValidationError.empty;
-    } else if (value.length != 4 || !_pinRegExp.hasMatch(value)) {
-      return PINValidationError.invalidFormat;
+      return ConfirmPINValidationError.empty;
     } else if (value != originalPIN) {
-      return PINValidationError.mismatch;
+      return ConfirmPINValidationError.mismatch;
     }
     return null;
   }

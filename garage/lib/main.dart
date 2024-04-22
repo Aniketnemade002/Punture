@@ -71,9 +71,9 @@ void main() async {
   final who = await _storage.read(key: 'S_UserEntity');
 
   if (who == 'USER') {
-    isuser == true;
+    isuser = true;
   } else if (who == 'OWNER') {
-    isuser == false;
+    isuser = false;
   } else {
     isuser = false;
   }

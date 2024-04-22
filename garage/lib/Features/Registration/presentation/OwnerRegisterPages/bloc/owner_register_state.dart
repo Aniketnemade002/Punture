@@ -1,7 +1,7 @@
 part of 'owner_register_bloc.dart';
 
 class OwnerRegisterState extends Equatable {
-  final FormzSubmissionStatus? status;
+  final FormzSubmissionStatus status;
 
   final String fcm;
   final Address village;

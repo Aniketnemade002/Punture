@@ -1,7 +1,7 @@
 part of 'user_register_bloc.dart';
 
 class UserRegisterState extends Equatable {
-  final FormzSubmissionStatus? status;
+  final FormzSubmissionStatus status;
 
   final String fcm;
   final Address village;

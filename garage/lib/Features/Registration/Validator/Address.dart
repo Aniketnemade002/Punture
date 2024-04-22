@@ -12,12 +12,14 @@ class Address extends FormzInput<String, AddressValidationError> {
   }
 }
 
-class FullAddress extends FormzInput<String, AddressValidationError> {
+enum FullAddressValidationError { empty }
+
+class FullAddress extends FormzInput<String, FullAddressValidationError> {
   const FullAddress.pure() : super.pure('');
   const FullAddress.dirty([String value = '']) : super.dirty(value);
 
   @override
-  AddressValidationError? validator(String value) {
-    return value.trim().isNotEmpty ? null : AddressValidationError.empty;
+  FullAddressValidationError? validator(String value) {
+    return value.trim().isNotEmpty ? null : FullAddressValidationError.empty;
   }
 }

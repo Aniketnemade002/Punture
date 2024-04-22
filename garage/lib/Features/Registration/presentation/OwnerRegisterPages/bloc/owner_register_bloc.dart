@@ -5,6 +5,7 @@ import 'package:formz/formz.dart';
 import 'package:garage/Features/Registration/Data/RepoImpl/OwnerRegisterRepoImpl.dart';
 import 'package:garage/Features/Registration/Validator/Address.dart';
 import 'package:garage/Features/Registration/Validator/Location.dart' as l;
+import 'package:garage/Features/Registration/Validator/Location.dart';
 
 import 'package:garage/Features/Registration/Validator/MobailNo.dart';
 import 'package:garage/Features/Registration/Validator/Name.dart';
@@ -30,6 +31,7 @@ class OwnerRegisterBloc extends Bloc<OwnerRegisterEvent, OwnerRegisterState> {
     on<PINChanged>(_PINChanged);
     on<ConfirmPINChanged>(_ConfirmPINChanged);
     on<RegisterSubmitted>(_RegisterSubmitted);
+    on<GeoLocationChanged>(_GeoLocationChanged);
     on<fullAddressChanged>(_fullAddressChanged);
   }
 
@@ -38,6 +40,7 @@ class OwnerRegisterBloc extends Bloc<OwnerRegisterEvent, OwnerRegisterState> {
     Emitter<OwnerRegisterState> emit,
   ) {
     final garageName = GarageName.dirty(event.GarageName);
+
     emit(
       state.copyWith(
         garageName: garageName,
@@ -45,15 +48,15 @@ class OwnerRegisterBloc extends Bloc<OwnerRegisterEvent, OwnerRegisterState> {
         isvalid: Formz.validate(
           [
             garageName,
-            state.fullAddress,
-            state.ownername,
             state.serviceCost,
-            state.geoLocation,
+            state.ownername,
             state.email,
             state.mobileNo,
+            state.village,
             state.pin,
             state.confirmpin,
-            state.village
+            state.geoLocation,
+            state.fullAddress
           ],
         ),
       ),
@@ -71,16 +74,16 @@ class OwnerRegisterBloc extends Bloc<OwnerRegisterEvent, OwnerRegisterState> {
         status: FormzSubmissionStatus.initial,
         isvalid: Formz.validate(
           [
-            ownername,
-            state.fullAddress,
             state.garageName,
             state.serviceCost,
-            state.geoLocation,
+            ownername,
             state.email,
             state.mobileNo,
+            state.village,
             state.pin,
             state.confirmpin,
-            state.village
+            state.geoLocation,
+            state.fullAddress
           ],
         ),
       ),
@@ -98,16 +101,16 @@ class OwnerRegisterBloc extends Bloc<OwnerRegisterEvent, OwnerRegisterState> {
         status: FormzSubmissionStatus.initial,
         isvalid: Formz.validate(
           [
-            serviceCost,
-            state.fullAddress,
             state.garageName,
+            serviceCost,
             state.ownername,
-            state.geoLocation,
             state.email,
             state.mobileNo,
+            state.village,
             state.pin,
             state.confirmpin,
-            state.village
+            state.geoLocation,
+            state.fullAddress
           ],
         ),
       ),
@@ -125,16 +128,16 @@ class OwnerRegisterBloc extends Bloc<OwnerRegisterEvent, OwnerRegisterState> {
         status: FormzSubmissionStatus.initial,
         isvalid: Formz.validate(
           [
-            state.serviceCost,
-            state.fullAddress,
             state.garageName,
+            state.serviceCost,
             state.ownername,
-            state.geoLocation,
             email,
             state.mobileNo,
+            state.village,
             state.pin,
             state.confirmpin,
-            state.village
+            state.geoLocation,
+            state.fullAddress
           ],
         ),
       ),
@@ -145,23 +148,23 @@ class OwnerRegisterBloc extends Bloc<OwnerRegisterEvent, OwnerRegisterState> {
     MobileNoChanged event,
     Emitter<OwnerRegisterState> emit,
   ) {
-    final mobilenumber = MobileNumber.dirty(event.mobileNo);
+    final mobileNo = MobileNumber.dirty(event.mobileNo);
     emit(
       state.copyWith(
-        mobileNo: mobilenumber,
+        mobileNo: mobileNo,
         status: FormzSubmissionStatus.initial,
         isvalid: Formz.validate(
           [
-            mobilenumber,
-            state.fullAddress,
-            state.serviceCost,
             state.garageName,
+            state.serviceCost,
             state.ownername,
-            state.geoLocation,
             state.email,
+            mobileNo,
+            state.village,
             state.pin,
             state.confirmpin,
-            state.village
+            state.geoLocation,
+            state.fullAddress
           ],
         ),
       ),
@@ -172,23 +175,53 @@ class OwnerRegisterBloc extends Bloc<OwnerRegisterEvent, OwnerRegisterState> {
     VillageChanged event,
     Emitter<OwnerRegisterState> emit,
   ) {
-    final vilage = Address.dirty(event.village);
+    final village = Address.dirty(event.village);
+    print('==========================${village.value}======================');
     emit(
       state.copyWith(
-        village: vilage,
+        village: village,
         status: FormzSubmissionStatus.initial,
         isvalid: Formz.validate(
           [
-            state.mobileNo,
-            state.fullAddress,
-            state.serviceCost,
             state.garageName,
+            state.serviceCost,
             state.ownername,
-            state.geoLocation,
             state.email,
+            state.mobileNo,
+            village,
             state.pin,
             state.confirmpin,
-            vilage
+            state.geoLocation,
+            state.fullAddress
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _GeoLocationChanged(
+    GeoLocationChanged event,
+    Emitter<OwnerRegisterState> emit,
+  ) {
+    final geoLocation = l.GeoPointInput.dirty(event.geoLocation);
+    print(
+        "Your Geo Locations ${geoLocation.value.latitude} and ${geoLocation.value.longitude}");
+    emit(
+      state.copyWith(
+        geoLocation: geoLocation,
+        status: FormzSubmissionStatus.initial,
+        isvalid: Formz.validate(
+          [
+            state.garageName,
+            state.serviceCost,
+            state.ownername,
+            state.email,
+            state.mobileNo,
+            state.village,
+            state.pin,
+            state.confirmpin,
+            geoLocation,
+            state.fullAddress
           ],
         ),
       ),
@@ -200,27 +233,26 @@ class OwnerRegisterBloc extends Bloc<OwnerRegisterEvent, OwnerRegisterState> {
     Emitter<OwnerRegisterState> emit,
   ) {
     final pin = PIN.dirty(event.pin);
-    final Confirmpin =
-        ConfirmPIN.dirty(originalPIN: event.pin, value: state.confirmpin.value);
+    final confirmpin = ConfirmPIN.dirty(
+      originalPIN: event.pin,
+      value: state.confirmpin.value,
+    );
     emit(
       state.copyWith(
-        confirmpin: Confirmpin,
+        confirmpin: confirmpin,
         pin: pin,
-        status: FormzSubmissionStatus.initial,
-        isvalid: Formz.validate(
-          [
-            state.mobileNo,
-            state.serviceCost,
-            state.fullAddress,
-            state.garageName,
-            state.ownername,
-            state.geoLocation,
-            Confirmpin,
-            state.email,
-            pin,
-            state.village
-          ],
-        ),
+        isvalid: Formz.validate([
+          state.garageName,
+          state.serviceCost,
+          state.ownername,
+          state.email,
+          state.mobileNo,
+          state.village,
+          pin,
+          confirmpin,
+          state.geoLocation,
+          state.fullAddress
+        ]),
       ),
     );
   }
@@ -229,25 +261,25 @@ class OwnerRegisterBloc extends Bloc<OwnerRegisterEvent, OwnerRegisterState> {
     ConfirmPINChanged event,
     Emitter<OwnerRegisterState> emit,
   ) {
-    final confirmpin =
-        ConfirmPIN.dirty(originalPIN: state.pin.value, value: event.confirmpin);
+    final confirmpin = ConfirmPIN.dirty(
+      originalPIN: state.pin.value,
+      value: event.confirmpin,
+    );
     emit(
       state.copyWith(
         confirmpin: confirmpin,
-        isvalid: Formz.validate(
-          [
-            state.mobileNo,
-            state.serviceCost,
-            state.fullAddress,
-            state.garageName,
-            state.ownername,
-            state.geoLocation,
-            confirmpin,
-            state.email,
-            state.pin,
-            state.village
-          ],
-        ),
+        isvalid: Formz.validate([
+          state.garageName,
+          state.serviceCost,
+          state.ownername,
+          state.email,
+          state.mobileNo,
+          state.village,
+          state.pin,
+          confirmpin,
+          state.geoLocation,
+          state.fullAddress
+        ]),
       ),
     );
   }
@@ -263,15 +295,16 @@ class OwnerRegisterBloc extends Bloc<OwnerRegisterEvent, OwnerRegisterState> {
         status: FormzSubmissionStatus.initial,
         isvalid: Formz.validate(
           [
-            fullAddress,
-            state.serviceCost,
             state.garageName,
+            state.serviceCost,
             state.ownername,
-            state.geoLocation,
             state.email,
+            state.mobileNo,
+            state.village,
             state.pin,
             state.confirmpin,
-            state.village
+            state.geoLocation,
+            fullAddress
           ],
         ),
       ),

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:garage/auth/Data/ModalImpl/UserResponseImpl.dart';
 import 'package:garage/auth/Data/Source/Remote_User.dart';
 import 'package:garage/auth/Domain/Eintity/LoginResponse.dart';
 import 'package:garage/auth/Domain/Repo/authrepo.dart';
@@ -27,7 +28,7 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
-  Future<Either<Fail, LoginResponse?>> Login(
+  Future<Either<Fail, LoginResponseModal?>> Login(
       {required String email, required String password}) async {
     try {
       final loginResponce = await user.LogIn(email: email, password: password);

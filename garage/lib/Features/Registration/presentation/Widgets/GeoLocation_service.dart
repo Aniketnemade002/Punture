@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:garage/constant/TextStyle/CustomText.dart';
+import 'package:garage/constant/constant.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -70,32 +72,66 @@ class _GLButtonState extends State<GLButton> {
   @override
   Widget build(BuildContext context) {
     return _isLocGot
-        ? const SizedBox(
-            height: 100,
-            width: 500,
+        ? Container(
+            height: 30,
+            decoration: BoxDecoration(
+              color: Kcolor.primary,
+              borderRadius:
+                  BorderRadius.circular(5), // Adjust the radius for round edges
+            ),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.thumb_up),
-                Text("Location obtained!"),
+                Icon(
+                  Icons.thumb_up,
+                  color: Kcolor.bg,
+                ),
+                SizedBox(
+                    width: 5), // Adjust the spacing between the icon and text
+                Text(
+                  "Location obtained!",
+                  style: TextStyle(
+                    fontFamily: fontstyles.Gpop,
+                    color: Kcolor.bg,
+                  ),
+                ),
               ],
             ),
           )
         : _iserror
             ? ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Kcolor.button,
+                  shadowColor: Kcolor.button,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(7)),
+                  ),
+                ),
                 onPressed: _getLocation,
                 child: _loading
                     ? const CircularProgressIndicator(
+                        strokeWidth: 5,
                         color: Colors.white,
                       )
                     : const Text('Try Again!'),
               )
             : ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Kcolor.button,
+                  shadowColor: Kcolor.button,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(7)),
+                  ),
+                ),
                 onPressed: _checkLocationPermission,
                 child: _loading
                     ? const CircularProgressIndicator(
                         color: Colors.white,
                       )
-                    : const Text('Get Location'),
-              );
+                    : Text(
+                        'Get Location',
+                        style: TextStyle(
+                            fontFamily: fontstyles.Gpop, color: Kcolor.bg),
+                      ));
   }
 }

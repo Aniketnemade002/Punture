@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 
 import 'package:garage/Features/Registration/presentation/Widgets/GeoLocation_service.dart';
+import 'package:garage/constant/TextStyle/CustomText.dart';
+import 'package:garage/constant/constant.dart';
 import 'package:garage/core/Dataset/Address.dart';
 
 // LocationSelectorButton(
@@ -28,6 +30,7 @@ class LocationSelectorButton extends StatefulWidget {
 }
 
 class _LocationSelectorButtonState extends State<LocationSelectorButton> {
+  String? _selectedVillage;
   void _openSelectionDialog() async {
     String? result = await showDialog(
       context: context,
@@ -35,15 +38,63 @@ class _LocationSelectorButtonState extends State<LocationSelectorButton> {
       builder: (BuildContext context) => SelectionDialog(),
     );
     if (result != null) {
+      setState(() {
+        _selectedVillage = result;
+      });
+    }
+    if (result != null) {
       widget.onSelectionDone(result);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: _openSelectionDialog,
-      child: Text('Select Location'),
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: _openSelectionDialog,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Kcolor.button,
+            shadowColor: Kcolor.button,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(7)),
+            ),
+          ),
+          child: Text(
+            'Select Location',
+            style: TextStyle(fontFamily: fontstyles.Gpop, color: Kcolor.bg),
+          ),
+        ),
+        SizedBox(height: 10),
+        _selectedVillage != null
+            ? Container(
+                height: 30,
+                decoration: BoxDecoration(
+                  color: Kcolor.primary,
+                  borderRadius: BorderRadius.circular(
+                      5), // Adjust the radius for round edges
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.thumb_up,
+                      color: Kcolor.bg,
+                    ),
+                    SizedBox(
+                        width:
+                            5), // Adjust the spacing between the icon and text
+                    Text(
+                      'Selected Village: $_selectedVillage',
+                      style: TextStyle(
+                          fontFamily: fontstyles.Gpop, color: Kcolor.bg),
+                    ),
+                  ],
+                ),
+              )
+            : SizedBox.shrink(),
+        SizedBox(height: 10),
+      ],
     );
   }
 }
@@ -67,7 +118,17 @@ class _SelectionDialogState extends State<SelectionDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Select Location'),
+      elevation: 10,
+      scrollable: true,
+      surfaceTintColor: Kcolor.bg,
+      backgroundColor: Kcolor.bg,
+      title: Text('Select Location',
+          style: TextStyle(
+            color: Kcolor.TextB,
+            fontFamily: fontstyles.Gpop,
+            fontWeight: FontWeight.w500,
+            fontSize: 25,
+          )),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -119,8 +180,8 @@ class _SelectionDialogState extends State<SelectionDialog> {
                 }, isVillage: true),
               ),
             if (_showError)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
+              const Padding(
+                padding: EdgeInsets.only(top: 8.0),
                 child: Text(
                   'Please select a village',
                   style: TextStyle(color: Colors.red, fontSize: 14),
@@ -144,12 +205,16 @@ class _SelectionDialogState extends State<SelectionDialog> {
                   });
                 }
               },
-              child: Text('Submit'),
               style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                      0), // Optional: if you want it fully rectangular
+                backgroundColor: Kcolor.button,
+                shadowColor: Kcolor.button,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(7)),
                 ),
+              ),
+              child: Text(
+                'Submit',
+                style: TextStyle(fontFamily: fontstyles.Gpop, color: Kcolor.bg),
               ),
             ),
           ],
@@ -162,16 +227,17 @@ class _SelectionDialogState extends State<SelectionDialog> {
       void Function(String?) onChanged,
       {bool isVillage = false}) {
     return DropdownButtonFormField<String>(
+      autofocus: true,
+      isExpanded: true,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 12),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.purple.shade800),
+          borderSide: BorderSide(color: Kcolor.button),
         ),
         border: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.purple.shade800),
+          borderSide: BorderSide(color: Kcolor.button),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.purple.shade800, width: 2.0),
+          borderSide: BorderSide(color: Kcolor.button, width: 2.0),
         ),
       ),
       value: itemKey != null ? eval(itemKey) : _selectedVillage,
@@ -179,7 +245,15 @@ class _SelectionDialogState extends State<SelectionDialog> {
       items: items.map<DropdownMenuItem<String>>((dynamic value) {
         return DropdownMenuItem<String>(
           value: itemKey != null ? value[itemKey] : value,
-          child: Text(itemKey != null ? value[itemKey] : value),
+          child: Text(
+            itemKey != null ? value[itemKey] : value,
+            style: TextStyle(
+              color: Kcolor.TextB,
+              fontFamily: fontstyles.Gpop,
+              fontWeight: FontWeight.w500,
+              fontSize: 15,
+            ),
+          ),
         );
       }).toList(),
       hint: Text(hintText),

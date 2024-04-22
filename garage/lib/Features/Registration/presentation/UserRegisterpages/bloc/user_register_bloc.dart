@@ -6,13 +6,13 @@ import 'package:formz/formz.dart';
 import 'package:garage/Features/Registration/Data/RepoImpl/UserRegisterRepoImpl.dart';
 import 'package:garage/Features/Registration/Validator/Address.dart';
 import 'package:garage/Features/Registration/Validator/Location.dart' as l;
+import 'package:garage/Features/Registration/Validator/Location.dart';
 import 'package:garage/Features/Registration/Validator/MobailNo.dart';
 import 'package:garage/Features/Registration/Validator/Name.dart';
 import 'package:garage/Features/Registration/Validator/PINValidator.dart';
 import 'package:garage/constant/constant.dart';
 import 'package:garage/core/Error/Error.dart';
 import 'package:garage/core/Validations/EmailValidator.dart';
-import 'package:garage/core/Validations/PasswordValidator.dart';
 
 part 'user_register_event.dart';
 part 'user_register_state.dart';
@@ -29,6 +29,7 @@ class UserRegisterBloc extends Bloc<UserRegisterEvent, UserRegisterState> {
     on<PINChanged>(_PINChanged);
     on<ConfirmPINChanged>(_ConfirmPINChanged);
     on<RegisterSubmitted>(_RegisterSubmitted);
+    on<GeoLocationChanged>(_GeoLocationChanged);
   }
 
   void _Namechanged(
@@ -43,12 +44,12 @@ class UserRegisterBloc extends Bloc<UserRegisterEvent, UserRegisterState> {
         isvalid: Formz.validate(
           [
             name,
-            state.geoLocation,
             state.email,
             state.mobileNo,
+            state.village,
             state.pin,
             state.confirmpin,
-            state.village
+            state.geoLocation,
           ],
         ),
       ),
@@ -67,12 +68,12 @@ class UserRegisterBloc extends Bloc<UserRegisterEvent, UserRegisterState> {
         isvalid: Formz.validate(
           [
             state.name,
-            state.geoLocation,
             email,
             state.mobileNo,
+            state.village,
             state.pin,
             state.confirmpin,
-            state.village
+            state.geoLocation,
           ],
         ),
       ),
@@ -83,20 +84,20 @@ class UserRegisterBloc extends Bloc<UserRegisterEvent, UserRegisterState> {
     MobileNoChanged event,
     Emitter<UserRegisterState> emit,
   ) {
-    final mobilenumber = MobileNumber.dirty(event.mobileNo);
+    final mobileNo = MobileNumber.dirty(event.mobileNo);
     emit(
       state.copyWith(
-        mobileNo: mobilenumber,
+        mobileNo: mobileNo,
         status: FormzSubmissionStatus.initial,
         isvalid: Formz.validate(
           [
-            mobilenumber,
             state.name,
-            state.geoLocation,
             state.email,
+            mobileNo,
+            state.village,
             state.pin,
             state.confirmpin,
-            state.village
+            state.geoLocation,
           ],
         ),
       ),
@@ -107,10 +108,10 @@ class UserRegisterBloc extends Bloc<UserRegisterEvent, UserRegisterState> {
     VillageChanged event,
     Emitter<UserRegisterState> emit,
   ) {
-    final vilage = Address.dirty(event.village);
+    final village = Address.dirty(event.village);
     emit(
       state.copyWith(
-        village: vilage,
+        village: village,
         status: FormzSubmissionStatus.initial,
         isvalid: Formz.validate(
           [
@@ -120,7 +121,33 @@ class UserRegisterBloc extends Bloc<UserRegisterEvent, UserRegisterState> {
             state.email,
             state.pin,
             state.confirmpin,
-            vilage
+            village
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _GeoLocationChanged(
+    GeoLocationChanged event,
+    Emitter<UserRegisterState> emit,
+  ) {
+    final geoLocation = l.GeoPointInput.dirty(event.geoLocation);
+    print(
+        "Your Geo Locations ${geoLocation.value.latitude} and ${geoLocation.value.longitude}");
+    emit(
+      state.copyWith(
+        geoLocation: geoLocation,
+        status: FormzSubmissionStatus.initial,
+        isvalid: Formz.validate(
+          [
+            state.mobileNo,
+            state.name,
+            geoLocation,
+            state.email,
+            state.pin,
+            state.confirmpin,
+            state.village
           ],
         ),
       ),
@@ -132,11 +159,11 @@ class UserRegisterBloc extends Bloc<UserRegisterEvent, UserRegisterState> {
     Emitter<UserRegisterState> emit,
   ) {
     final pin = PIN.dirty(event.pin);
-    final Confirmpin =
+    final confirmpin =
         ConfirmPIN.dirty(originalPIN: event.pin, value: state.confirmpin.value);
     emit(
       state.copyWith(
-        confirmpin: Confirmpin,
+        confirmpin: confirmpin,
         pin: pin,
         status: FormzSubmissionStatus.initial,
         isvalid: Formz.validate(
@@ -144,9 +171,9 @@ class UserRegisterBloc extends Bloc<UserRegisterEvent, UserRegisterState> {
             state.mobileNo,
             state.name,
             state.geoLocation,
-            Confirmpin,
             state.email,
             pin,
+            confirmpin,
             state.village
           ],
         ),
@@ -168,9 +195,9 @@ class UserRegisterBloc extends Bloc<UserRegisterEvent, UserRegisterState> {
             state.mobileNo,
             state.name,
             state.geoLocation,
-            confirmpin,
             state.email,
             state.pin,
+            confirmpin,
             state.village
           ],
         ),

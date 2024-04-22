@@ -78,3 +78,28 @@ class _CustomOutlinedTextFieldState extends State<CustomOutlinedTextField> {
     );
   }
 }
+
+
+
+  // RichText(
+  //                   textAlign: TextAlign.left,
+  //                   text: TextSpan(
+  //                     children: [
+  //                       WidgetSpan(
+  //                         alignment: PlaceholderAlignment.middle,
+  //                         child: Icon(Icons.person,
+  //                             size: 30,
+  //                             color: Kcolor.button), // Icon on the left side
+  //                       ),
+  //                       TextSpan(
+  //                         text: 'Personal Informaion ', // Text next to the icon
+  //                         style: TextStyle(
+  //                           color: Kcolor.TextB,
+  //                           fontFamily: fontstyles.Gpop,
+  //                           fontWeight: FontWeight.w500,
+  //                           fontSize: 25,
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
