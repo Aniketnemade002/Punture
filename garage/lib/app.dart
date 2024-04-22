@@ -12,13 +12,20 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:garage/EmailVerify/Presentaion/bloc/email_verify_bloc.dart';
+import 'package:garage/EmailVerify/VerifyPage.dart';
 import 'package:garage/Fresh.dart';
 import 'package:garage/auth/Data/RepoImp/AuthRepoImpl.dart';
 import 'package:garage/auth/Data/RepoImp/UserRepoImpl.dart';
+import 'package:garage/auth/Login/Prsentation/bloc/login_bloc.dart';
+import 'package:garage/auth/Login/Prsentation/page/Forgotpass.dart';
+import 'package:garage/auth/Login/Prsentation/page/Login.dart';
+import 'package:garage/auth/bloc/auth_bloc.dart';
 import 'package:garage/auth/singup/Presentaion/bloc/singup_bloc.dart';
+import 'package:garage/auth/singup/Presentaion/page/SingUp.dart';
 import 'package:garage/constant/constant.dart';
+import 'package:garage/core/Error/Error.dart';
 import 'package:garage/core/Validations/connectivity/connectivity_bloc.dart';
+import 'package:garage/dashbord.dart';
 
 class app extends StatefulWidget {
   const app({
@@ -80,8 +87,11 @@ class _appState extends State<app> with WidgetsBindingObserver {
       child: MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => ConnectivityBloc()),
-            BlocProvider(create: (_) => VerificationBloc()),
             BlocProvider(create: (_) => SignupBloc()),
+            BlocProvider(create: (_) => LoginBloc()),
+            BlocProvider(
+                create: (_) => AuthBloc(
+                    authenticationRepository: _authenticationRepository))
           ],
           child: appstart(
             userUid: widget.WhoUid,
@@ -149,33 +159,99 @@ class _appstartState extends State<appstart> {
               showSnackbar('No internet connection', false, 1);
             }
             if (state.status == ConnectivityStatus.connected) {
+              isinterneconnected = true;
               showSnackbar('Connected! ', true, 2);
             }
             if (state.status == ConnectivityStatus.disconnected) {
+              isinterneconnected = false;
+
               showSnackbar('No internet connection', false, 1);
             }
           },
         ),
       ],
       child: MaterialApp(
-        scaffoldMessengerKey: scaffoldMessengerKey,
-        title: 'Punture',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Kcolor.bg),
-          useMaterial3: true,
-        ),
-        navigatorKey: _navigatorKey,
-        home: SelectScreen(),
+          scaffoldMessengerKey: scaffoldMessengerKey,
+          title: 'Punture',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Kcolor.bg),
+            useMaterial3: true,
+          ),
+          navigatorKey: _navigatorKey,
+          builder: (context, child) {
+            return BlocListener<AuthBloc, AuthState>(
+              listener: (context, state) async {
+                UserRepoImpl _UserRepo = UserRepoImpl();
+                AuthRepoImpl _auth = AuthRepoImpl();
+                final isLogInResult;
 
-        // ConnectionPass(
-        //     child: finalApp(
-        //   userUid: widget.userUid,
-        //   userWho: widget.userWho,
-        //   UserFcmToken: widget.UserFcmToken,
-        //   UserisProfileCompleted: widget.UserisProfileCompleted,
-        // )),
-      ),
+                if (state.status == AuthenticationStatus.unauthenticated) {
+                  _navigator.push(MaterialPageRoute(
+                      builder: (BuildContext context) => const SelectScreen()));
+                }
+
+                if (state.status == AuthenticationStatus.unknown) {
+                  final isloggin = await _auth.islogedin();
+                  final isverified = await _auth.isverified();
+
+                  var isLogiinResult;
+                  isloggin.fold(
+                    (l) {
+                      Failure.handle(l.exp);
+                      isLogiinResult == false;
+                    },
+                    (r) => r == true
+                        ? isLogiinResult == true
+                        : isLogiinResult == false,
+                  );
+
+                  FlutterNativeSplash.remove();
+
+                  if (isLogiinResult == true) {
+                    if (isverified) {
+                      if (widget.UserFcmToken != null &&
+                          widget.UserFcmToken != '') {
+                        _UserRepo.SaveFcmTocken(
+                            token: widget.UserFcmToken ?? '');
+                      }
+
+                      //
+                      //
+                      //
+                      //
+                      //if (user!.isProfileCompleted == true) {
+                      //   print("===============================  In App======");
+                      //   _navigator.push(MaterialPageRoute(
+                      //       builder: (BuildContext context) =>
+                      //           const UserDash()));
+                      //   ;
+                      // } else {
+                      //   _navigator.push(MaterialPageRoute(
+                      //       builder: (BuildContext context) =>
+                      //           const ProfileBuildPage()));
+                      //
+                      //
+                      //
+                      //
+                      //
+                      //
+                      // }
+                    } else {
+                      _navigator.push(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              EmailVerificationScreen()));
+                    }
+                  } else {
+                    _navigator.push(MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            const SelectScreen()));
+                  }
+                }
+              },
+              child: child,
+            );
+          }),
     ));
   }
 }
@@ -198,13 +274,6 @@ class DismissKeyboard extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
 
 // class finalApp extends StatefulWidget {
 //   const finalApp({

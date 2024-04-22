@@ -8,10 +8,10 @@ class UserRepoImpl implements UserRepo {
   @override
   Future<Either<Fail, bool>> PasswordReset({required String email}) async {
     try {
-      final result = await user.PasswordReset(email: email);
+      final result = await user.PasswordReset(email: email.trim());
       return right(result);
     } on Exp catch (e) {
-      return left(Fail(exp: e));
+      return left(Fail(exp: e.massage));
     }
   }
 

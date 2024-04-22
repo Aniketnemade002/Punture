@@ -46,8 +46,8 @@ void main() async {
     );
     print('User granted permission: ${settings.authorizationStatus}');
 
-    token = await FirebaseMessaging.instance.getToken() ?? '';
-    print("----------------------------Fcm Tocken $token ");
+    FCMtoken = await FirebaseMessaging.instance.getToken() ?? '';
+    print("----------------------------Fcm Tocken $FCMtoken ");
     pref = await SharedPreferences.getInstance();
 
     // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -71,11 +71,11 @@ void main() async {
   final who = await _storage.read(key: 'S_UserEntity');
 
   if (who == 'USER') {
-    isuser = true;
+    isuser == true;
   } else if (who == 'OWNER') {
-    isuser = false;
+    isuser == false;
   } else {
-    isuser = null;
+    isuser = false;
   }
 
   print("Calling main app");
@@ -84,7 +84,7 @@ void main() async {
       child: app(
     WhoUid: Uid,
     userWho: who,
-    UserFcmToken: token,
+    UserFcmToken: FCMtoken,
     UserisProfileCompleted: isProfileCompleted,
   )));
 }

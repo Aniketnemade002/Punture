@@ -3,7 +3,7 @@ import 'package:garage/constant/OnBording/onbord.dart';
 import 'package:garage/constant/constant.dart';
 
 class OnBordUser extends StatelessWidget {
-  const OnBordUser({Key? key}) : super(key: key);
+  const OnBordUser({super.key});
 
   @override
   Widget build(BuildContext context) {

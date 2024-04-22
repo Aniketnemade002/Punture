@@ -15,6 +15,7 @@ Color hexToColor(String hex) {
 class Kcolor {
   static Color primary = hexToColor('#990011');
   static Color bg = hexToColor('#faf9f9');
+  static Color bg_2 = hexToColor('#f3f3f6');
   static Color Black = hexToColor('#1d1d1d');
   static Color TextB = hexToColor('#35383b');
 
@@ -23,23 +24,25 @@ class Kcolor {
   static Color button = hexToColor('#cb4950');
   static Color Connected = hexToColor('#23b84b');
   static Color Disconnected = hexToColor('#959a9d');
-  static Color C_Under = hexToColor('#c15756');
+
+  static Color C_Under = hexToColor('#ffdbd6');
+  static Color C_Under_2 = hexToColor('#e59596');
+  static Color C_Under_3 = hexToColor('#fce9ea');
+  static Color C_Under_4 = hexToColor('#f8e9eb');
 
   static Color Fbutton = hexToColor('#c00c26');
   // #da2633 payment button
 }
 
-class Kfont {
-  static String main = 'DM Serif Display';
-  static String primary = 'poppin';
-}
+// dR0eX2df8dmrdYhsb1lEoTGVkArjCZ3q
+// 13094748889332409102
 
-late bool? isuser;
-late bool? isinterneconnected;
+late bool isuser;
+bool isinterneconnected = false;
 late SharedPreferences? pref;
 late bool? GodMode;
 late String? UserUid;
-late String? token;
+late String? FCMtoken;
 late bool? firstRun;
 late bool? isProfileVerified;
 late String? isProfileCompleted;

@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // GLButton(
 //   onLocationObtained: (GeoPoint geoPoint) {
 //     print("Received GeoPoint: ${geoPoint.latitude}, ${geoPoint.longitude}");
-//     // You can now use this GeoPoint in your Firestore database operations
+//     SSSS
 //   },
 // )
 

@@ -10,6 +10,7 @@ import 'package:garage/constant/constant.dart';
 import 'package:garage/core/Error/Error.dart';
 
 enum AuthenticationStatus {
+  unknown,
   authenticated,
   unauthenticated,
 }
@@ -21,7 +22,7 @@ class AuthRepoImpl implements AuthRepo {
   final _controller = StreamController<AuthenticationStatus>();
   Stream<AuthenticationStatus> get status async* {
     await Future<void>.delayed(const Duration(seconds: 1));
-    yield AuthenticationStatus.unauthenticated;
+    yield AuthenticationStatus.unknown;
     yield* _controller.stream;
   }
 
@@ -51,7 +52,7 @@ class AuthRepoImpl implements AuthRepo {
         return right(null);
       }
     } on Exp catch (e) {
-      return left(Fail(exp: e));
+      return left(Fail(exp: e.massage));
     }
   }
 
@@ -98,7 +99,7 @@ class AuthRepoImpl implements AuthRepo {
         return right(false);
       }
     } on Exp catch (e) {
-      return left(Fail(exp: e));
+      return left(Fail(exp: e.massage));
     }
   }
 

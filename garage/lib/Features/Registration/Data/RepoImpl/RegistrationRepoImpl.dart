@@ -13,7 +13,7 @@ class RegistrationRepoImpl implements RegistrationRepo {
       final status = await Permission.locationWhenInUse.status;
 
       if (status.isGranted) {
-        final result = _Register.getGeoLocation();
+        final result = await _Register.getGeoLocation();
         if (result != null) {
           return result;
         } else {
@@ -21,7 +21,7 @@ class RegistrationRepoImpl implements RegistrationRepo {
         }
       } else if (status.isDenied) {
         await Permission.locationWhenInUse.request();
-        final result = _Register.getGeoLocation();
+        final result = await _Register.getGeoLocation();
         if (result != null) {
           return result;
         } else {
@@ -29,15 +29,15 @@ class RegistrationRepoImpl implements RegistrationRepo {
         }
       } else if (status.isPermanentlyDenied) {
         openAppSettings();
-        final result = _Register.getGeoLocation();
+        final result = await _Register.getGeoLocation();
         if (result != null) {
           return result;
         } else {
           return null;
         }
       }
-    } on Exp catch (e) {
-      Fail(exp: e);
+    } catch (e) {
+      Failure.handle("Faild GeoLocation!!");
       return null;
     }
   }

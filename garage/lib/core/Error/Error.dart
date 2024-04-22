@@ -40,7 +40,7 @@ class Failure {
         behavior: SnackBarBehavior.floating,
         actionOverflowThreshold: 0.25,
         padding: const EdgeInsets.all(1),
-        backgroundColor: Kcolor.Disconnected,
+        backgroundColor: Colors.red,
         content: Text(
           errorMessage,
           textAlign: TextAlign.center,

@@ -37,11 +37,9 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   void _onConnectivityChanged(
       ConnectivityChanged event, Emitter<ConnectivityState> emit) {
     if (event.connectivityResult == ConnectivityResult.none) {
-      isinterneconnected == false;
       print("--------------------------LOST--------------");
       emit(ConnectivityState(ConnectivityStatus.disconnected));
     } else {
-      isinterneconnected == true;
       emit(ConnectivityState(ConnectivityStatus.connected));
     }
   }

@@ -8,8 +8,6 @@ import 'package:garage/core/Error/Error.dart';
 
 import '../ModalImpl/UserResponseImpl.dart';
 
-final loc = GeoPoint(112, 11.5);
-
 abstract interface class UserDataSource {
   Future<bool> SendVerificationEmail();
   Future<bool> ReSendVerificationEmail();
@@ -114,7 +112,7 @@ class UserDataSourceImpl implements UserDataSource {
   @override
   Future<bool> SendVerificationEmail() async {
     try {
-      final user = fdb.currentUser;
+      final user = await fdb.currentUser;
       if (user != null) {
         await user.sendEmailVerification();
         return true;

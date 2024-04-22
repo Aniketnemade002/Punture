@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:garage/login.dart';
+import 'package:garage/auth/Login/Prsentation/page/Login.dart';
 import 'package:garage/constant/constant.dart';
 import 'package:lottie/lottie.dart';
 
@@ -155,13 +155,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           ? Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Userlogin(), //user
+                                builder: (context) => LoginScreen(), //user
                               ),
                               (Route<dynamic> route) => false)
                           : Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Ownerlogin(), //owner
+                                builder: (context) => LoginScreen(), //owner
                               ),
                               (Route<dynamic> route) => false);
                     } else {
