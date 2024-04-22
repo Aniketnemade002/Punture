@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:garage/constant/constant.dart';
-import 'package:garage/constant/constant.dart ' as c;
-import 'package:garage/core/Validations/connectivity/connectivity_bloc.dart';
 
 class UserDash extends StatefulWidget {
   const UserDash({Key? key}) : super(key: key);

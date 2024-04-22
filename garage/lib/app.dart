@@ -8,7 +8,6 @@
 //    return Garages.map((garage)=> Garagemodal.fromjson(Garage)).toList
 
 //    }
-import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -23,11 +22,8 @@ import 'package:garage/Fresh.dart';
 import 'package:garage/auth/Data/RepoImp/AuthRepoImpl.dart';
 import 'package:garage/auth/Data/RepoImp/UserRepoImpl.dart';
 import 'package:garage/auth/Login/Prsentation/bloc/login_bloc.dart';
-import 'package:garage/auth/Login/Prsentation/page/Forgotpass.dart';
-import 'package:garage/auth/Login/Prsentation/page/Login.dart';
 import 'package:garage/auth/bloc/auth_bloc.dart';
 import 'package:garage/auth/singup/Presentaion/bloc/singup_bloc.dart';
-import 'package:garage/auth/singup/Presentaion/page/SingUp.dart';
 import 'package:garage/constant/constant.dart';
 import 'package:garage/core/Error/Error.dart';
 import 'package:garage/core/Validations/connectivity/connectivity_bloc.dart';

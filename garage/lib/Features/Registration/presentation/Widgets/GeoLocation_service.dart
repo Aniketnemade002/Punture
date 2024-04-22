@@ -26,7 +26,6 @@ class _GLButtonState extends State<GLButton> {
   final Location _location = Location();
   bool _loading = false;
   LocationData? _locationData;
-  String? _error;
   bool _isLocGot = false;
   bool _iserror = false;
 
@@ -43,7 +42,6 @@ class _GLButtonState extends State<GLButton> {
 
   Future<void> _getLocation() async {
     setState(() {
-      _error = null;
       _loading = true;
     });
     try {
@@ -61,7 +59,6 @@ class _GLButtonState extends State<GLButton> {
       });
     } on PlatformException catch (err) {
       setState(() {
-        _error = err.code;
         _loading = false;
         _isLocGot = false;
         _iserror = true;

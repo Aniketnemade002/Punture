@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:garage/Features/owner/Domain/Entity/Owner.dart';
-import 'package:garage/Features/owner/Domain/Entity/Owner.dart';
 
 class MainOwnerModal extends MainOwner {
   MainOwnerModal(

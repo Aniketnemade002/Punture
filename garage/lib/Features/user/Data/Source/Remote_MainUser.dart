@@ -12,7 +12,7 @@ abstract interface class mainUserDataSource {
 class mainUserDataSourceImpl implements mainUserDataSource {
   final fdb = FirebaseAuth.instance;
   final db = FirebaseFirestore.instance;
-  final _storage = storage;
+
   final String Who = isuser == true ? 'USER' : 'OWNER';
 
   @override

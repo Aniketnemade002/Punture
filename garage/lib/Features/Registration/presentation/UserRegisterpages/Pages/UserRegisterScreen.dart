@@ -66,13 +66,16 @@ class UserRegisterScreen extends StatelessWidget {
                 child: Container(
                   // Adjust padding if needed
                   padding: const EdgeInsets.all(2),
-                  child: isuser == true
-                      ? Lottie.asset(
-                          'assets/images/Animation/user/travell.json',
-                        )
-                      : Lottie.asset(
-                          'assets/images/Animation/Garage/owner.json',
-                        ),
+                  child: Lottie.asset(
+                    'assets/images/Animation/user/travell.json',
+                  ),
+                  // child: isuser == true
+                  //     ? Lottie.asset(
+                  //         'assets/images/Animation/user/travell.json',
+                  //       )
+                  //     : Lottie.asset(
+                  //         'assets/images/Animation/Garage/owner.json',
+                  //       ),
                 ),
               ),
             ),

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:fpdart/fpdart.dart';
 import 'package:garage/auth/Data/ModalImpl/UserResponseImpl.dart';
-import 'package:garage/auth/Domain/Eintity/LoginResponse.dart';
 import 'package:garage/core/Error/Error.dart';
 
 abstract interface class AuthRepo {

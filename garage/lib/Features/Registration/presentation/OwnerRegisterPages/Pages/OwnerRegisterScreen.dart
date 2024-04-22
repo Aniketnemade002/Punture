@@ -1,13 +1,10 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:garage/Features/Registration/Validator/Email.dart';
 import 'package:garage/Features/Registration/Validator/Location.dart';
-import 'package:garage/Features/Registration/Validator/Name.dart';
 import 'package:garage/Features/Registration/presentation/OwnerRegisterPages/bloc/owner_register_bloc.dart';
 import 'package:garage/Features/Registration/presentation/Widgets/GeoLocation_service.dart';
 import 'package:garage/Features/Registration/presentation/Widgets/loc.dart';

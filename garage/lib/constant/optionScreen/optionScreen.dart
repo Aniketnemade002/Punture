@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:garage/constant/constant.dart';
 import 'package:lottie/lottie.dart';
@@ -25,7 +23,7 @@ class _Optionscreen extends State<Optionscreen> {
     // Define your custom colors
     Color backgroundColor = Kcolor.bg; // Background color of the screen
     Color textColor = Kcolor.TextB; // Text color
-    Color buttonColor = Kcolor.button; // Background color of the buttons
+// Background color of the buttons
     Color buttonTextColor = Kcolor.bg; // Text color of the buttons
     Color buttonBorderColor =
         Kcolor.desable; // Border color of the outlined button

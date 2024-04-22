@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:garage/auth/Data/ModalImpl/UserResponseImpl.dart';
 import 'package:garage/auth/Data/Source/Remote_User.dart';
-import 'package:garage/auth/Domain/Eintity/LoginResponse.dart';
 import 'package:garage/auth/Domain/Repo/authrepo.dart';
 import 'package:garage/constant/constant.dart';
 import 'package:garage/core/Error/Error.dart';

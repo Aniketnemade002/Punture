@@ -11,7 +11,6 @@ abstract interface class mainOwnerDataSource {
 class mainOwnerDataSourceImpl implements mainOwnerDataSource {
   final fdb = FirebaseAuth.instance;
   final db = FirebaseFirestore.instance;
-  final _storage = storage;
   final String Who = isuser == true ? 'USER' : 'OWNER';
   @override
   Future<MainOwnerModal?> GetOwner() async {
