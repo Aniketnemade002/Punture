@@ -288,10 +288,10 @@ class SelectUser extends StatelessWidget {
               child: Lottie.asset('assets/images/Animation/user/travell.json'),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 15,
           ),
-          Text(
+          const Text(
             "User",
             style: TextStyle(
                 color: Colors.black,

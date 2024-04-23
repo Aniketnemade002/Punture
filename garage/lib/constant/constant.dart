@@ -49,6 +49,7 @@ late bool? isProfileVerified;
 late String? isProfileCompleted;
 late GeoPoint? GetgeoPoint;
 late String? GetVillage;
+late int CurrentBalence;
 
 final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
@@ -57,6 +58,37 @@ const storage = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true));
 
 
+
+
+                          //     Card(
+                          //   shadowColor: Kcolor.secondary,
+                          //   elevation: 5,
+                          //   surfaceTintColor: Kcolor.bg,
+                          //   color: Kcolor.bg,
+                          //   child: Padding(
+                          //       padding: const EdgeInsets.all(10),
+                          //       child: Text("HIIi")),
+                          // ),
+
+  // SlideAction(
+  //               sliderRotate: false,
+
+  //               borderRadius: 8,
+  //               innerColor: Kcolor.Fbutton,
+  //               outerColor: Kcolor.C_Under_4,
+
+  //               // Let's change the icon and the icon color
+  //               sliderButtonIcon: const Icon(
+  //                 Icons.arrow_forward_ios_outlined,
+  //                 color: Colors.white,
+  //               ),
+  //               textColor: Kcolor.TextB,
+  //               elevation: 20,
+
+  //               text: "Pay",
+
+              
+  //             ),
 
 //Storage =
   // _storage.write(    key: 'Uid',                    value: loginResponce.Uid);

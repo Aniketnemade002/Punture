@@ -19,6 +19,9 @@ import 'package:garage/Features/Registration/presentation/UserRegisterpages/bloc
 import 'package:garage/Features/owner/Data/RepoImp/MainOwnerRepoImpl.dart';
 import 'package:garage/Features/user/Data/RepoImp/MainUserImpl.dart';
 import 'package:garage/Fresh.dart';
+import 'package:garage/Payment/Presentation/bloc/payment_bloc.dart';
+import 'package:garage/Payment/Presentation/pages/OwnerWallet.dart';
+
 import 'package:garage/auth/Data/RepoImp/AuthRepoImpl.dart';
 import 'package:garage/auth/Data/RepoImp/UserRepoImpl.dart';
 import 'package:garage/auth/Login/Prsentation/bloc/login_bloc.dart';
@@ -28,6 +31,7 @@ import 'package:garage/constant/constant.dart';
 import 'package:garage/core/Error/Error.dart';
 import 'package:garage/core/Validations/connectivity/connectivity_bloc.dart';
 import 'package:garage/dashbord.dart';
+import 'package:slide_to_act/slide_to_act.dart';
 
 class app extends StatefulWidget {
   const app({
@@ -95,7 +99,10 @@ class _appState extends State<app> with WidgetsBindingObserver {
                 create: (_) => AuthBloc(
                     authenticationRepository: _authenticationRepository)),
             BlocProvider(create: (_) => OwnerRegisterBloc()),
-            BlocProvider(create: (_) => UserRegisterBloc())
+            BlocProvider(create: (_) => UserRegisterBloc()),
+            BlocProvider(
+                create: (_) => PaymentBloc()
+                  ..add(isuser ? UserFetchBalance() : OwnerFetchBalance()))
           ],
           child: appstart(
             userUid: widget.WhoUid,
@@ -175,132 +182,134 @@ class _appstartState extends State<appstart> {
         ),
       ],
       child: MaterialApp(
-        scaffoldMessengerKey: scaffoldMessengerKey,
-        title: 'Punture',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Kcolor.bg),
-          useMaterial3: true,
-        ),
-        navigatorKey: _navigatorKey,
-        builder: (context, child) {
-          return BlocListener<AuthBloc, AuthState>(
-            listener: (context, state) async {
-              UserRepoImpl _UserRepo = UserRepoImpl();
-              AuthRepoImpl _auth = AuthRepoImpl();
-              MainOwnerRepoImpl _mainOwnerRepo = MainOwnerRepoImpl();
-              MainUserRepoImpl _mainUserRepo = MainUserRepoImpl();
+          scaffoldMessengerKey: scaffoldMessengerKey,
+          title: 'Punture',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Kcolor.bg),
+            useMaterial3: true,
+          ),
+          navigatorKey: _navigatorKey,
+          home: OwnerWallet()
 
-              if (state.status == AuthenticationStatus.unauthenticated) {
-                _navigator.push(MaterialPageRoute(
-                    builder: (BuildContext context) => const SelectScreen()));
-              }
+          // builder: (context, child) {
+          //   return BlocListener<AuthBloc, AuthState>(
+          //     listener: (context, state) async {
+          //       UserRepoImpl _UserRepo = UserRepoImpl();
+          //       AuthRepoImpl _auth = AuthRepoImpl();
+          //       MainOwnerRepoImpl _mainOwnerRepo = MainOwnerRepoImpl();
+          //       MainUserRepoImpl _mainUserRepo = MainUserRepoImpl();
 
-              if (state.status == AuthenticationStatus.unknown) {
-                final isloggin = await _auth.islogedin();
-                final isverified = await _auth.isverified();
+          //       if (state.status == AuthenticationStatus.unauthenticated) {
+          //         _navigator.push(MaterialPageRoute(
+          //             builder: (BuildContext context) => const SelectScreen()));
+          //       }
 
-                var isLogiinResult;
-                isloggin.fold(
-                  (l) {
-                    Failure.handle(l.exp);
-                    isLogiinResult == false;
-                  },
-                  (r) => r == true
-                      ? isLogiinResult == true
-                      : isLogiinResult == false,
-                );
+          //       if (state.status == AuthenticationStatus.unknown) {
+          //         final isloggin = await _auth.islogedin();
+          //         final isverified = await _auth.isverified();
 
-                FlutterNativeSplash.remove();
+          //         var isLogiinResult;
+          //         isloggin.fold(
+          //           (l) {
+          //             Failure.handle(l.exp);
+          //             isLogiinResult == false;
+          //           },
+          //           (r) => r == true
+          //               ? isLogiinResult == true
+          //               : isLogiinResult == false,
+          //         );
 
-                if (isLogiinResult == true) {
-                  if (isverified) {
-                    if (isuser) {
-                      if (widget.UserFcmToken != null &&
-                          widget.UserFcmToken != '') {
-                        await _UserRepo.SaveFcmTocken(
-                            token: widget.UserFcmToken ?? '');
+          //         FlutterNativeSplash.remove();
 
-                        final mainUserResult = await _mainUserRepo.GetUser();
-                        mainUserResult.fold(
-                          (l) {
-                            Failure.handle(l.exp);
-                            _navigator.push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const SelectScreen()));
-                          },
-                          (r) {
-                            if (r!.isProfileCompleted) {
-                              print(
-                                  "===============================  In App======");
-                              _navigator.push(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const UserDash(),
-                                ),
-                              );
-                            } else {
-                              _navigator.push(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      OwnerRegisterScreen(),
-                                ),
-                              );
-                            }
-                          },
-                        );
-                      }
-                    } else {
-                      if (widget.UserFcmToken != null &&
-                          widget.UserFcmToken != '') {
-                        await _UserRepo.SaveFcmTocken(
-                            token: widget.UserFcmToken ?? '');
-                      }
+          //         if (isLogiinResult == true) {
+          //           if (isverified) {
+          //             if (isuser) {
+          //               if (widget.UserFcmToken != null &&
+          //                   widget.UserFcmToken != '') {
+          //                 await _UserRepo.SaveFcmTocken(
+          //                     token: widget.UserFcmToken ?? '');
 
-                      final mainOwnerResult = await _mainOwnerRepo.GetOwner();
-                      mainOwnerResult.fold(
-                        (l) {
-                          Failure.handle(l.exp);
-                          _navigator.push(MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  const SelectScreen()));
-                        },
-                        (r) {
-                          if (r!.isProfileCompleted) {
-                            print(
-                                "===============================  In App======");
-                            _navigator.push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const UserDash(),
-                              ),
-                            );
-                          } else {
-                            _navigator.push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    UserRegisterScreen(),
-                              ),
-                            );
-                          }
-                        },
-                      );
-                    }
-                  } else {
-                    _navigator.push(MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            EmailVerificationScreen()));
-                  }
-                } else {
-                  _navigator.push(MaterialPageRoute(
-                      builder: (BuildContext context) => const SelectScreen()));
-                }
-              }
-            },
-            child: child,
-          );
-        },
-      ),
+          //                 final mainUserResult = await _mainUserRepo.GetUser();
+          //                 mainUserResult.fold(
+          //                   (l) {
+          //                     Failure.handle(l.exp);
+          //                     _navigator.push(MaterialPageRoute(
+          //                         builder: (BuildContext context) =>
+          //                             const SelectScreen()));
+          //                   },
+          //                   (r) {
+          //                     if (r!.isProfileCompleted) {
+          //                       print(
+          //                           "===============================  In App======");
+          //                       _navigator.push(
+          //                         MaterialPageRoute(
+          //                           builder: (BuildContext context) =>
+          //                               const UserDash(),
+          //                         ),
+          //                       );
+          //                     } else {
+          //                       _navigator.push(
+          //                         MaterialPageRoute(
+          //                           builder: (BuildContext context) =>
+          //                               OwnerRegisterScreen(),
+          //                         ),
+          //                       );
+          //                     }
+          //                   },
+          //                 );
+          //               }
+          //             } else {
+          //               if (widget.UserFcmToken != null &&
+          //                   widget.UserFcmToken != '') {
+          //                 await _UserRepo.SaveFcmTocken(
+          //                     token: widget.UserFcmToken ?? '');
+          //               }
+
+          //               final mainOwnerResult = await _mainOwnerRepo.GetOwner();
+          //               mainOwnerResult.fold(
+          //                 (l) {
+          //                   Failure.handle(l.exp);
+          //                   _navigator.push(MaterialPageRoute(
+          //                       builder: (BuildContext context) =>
+          //                           const SelectScreen()));
+          //                 },
+          //                 (r) {
+          //                   if (r!.isProfileCompleted) {
+          //                     print(
+          //                         "===============================  In App======");
+          //                     _navigator.push(
+          //                       MaterialPageRoute(
+          //                         builder: (BuildContext context) =>
+          //                             const UserDash(),
+          //                       ),
+          //                     );
+          //                   } else {
+          //                     _navigator.push(
+          //                       MaterialPageRoute(
+          //                         builder: (BuildContext context) =>
+          //                             UserRegisterScreen(),
+          //                       ),
+          //                     );
+          //                   }
+          //                 },
+          //               );
+          //             }
+          //           } else {
+          //             _navigator.push(MaterialPageRoute(
+          //                 builder: (BuildContext context) =>
+          //                     EmailVerificationScreen()));
+          //           }
+          //         } else {
+          //           _navigator.push(MaterialPageRoute(
+          //               builder: (BuildContext context) => const SelectScreen()));
+          //         }
+          //       }
+          //     },
+          //     child: child,
+          //   );
+          // },
+          ),
     ));
   }
 }

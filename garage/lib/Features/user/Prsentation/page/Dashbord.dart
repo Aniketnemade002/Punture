@@ -1,19 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Bottom Navigation Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: BottomNavigationDemo(),
-    );
-  }
-}
-
 class BottomNavigationDemo extends StatefulWidget {
   @override
   _BottomNavigationDemoState createState() => _BottomNavigationDemoState();

@@ -461,7 +461,7 @@ class _SubmitButton extends StatelessWidget {
                               .read<UserRegisterBloc>()
                               .add(RegisterSubmitted());
                         })
-                    : () => print("notworking"),
+                    : () => null,
                 child: Text(
                   'Register',
                   style: TextStyle(
