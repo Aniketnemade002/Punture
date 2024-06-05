@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:garage/auth/Data/ModalImpl/UserResponseImpl.dart';
 import 'package:garage/auth/Data/Source/Remote_User.dart';
@@ -16,7 +17,6 @@ enum AuthenticationStatus {
 
 class AuthRepoImpl implements AuthRepo {
   final UserDataSourceImpl user = UserDataSourceImpl();
-  final _storage = storage;
 
   final _controller = StreamController<AuthenticationStatus>();
   Stream<AuthenticationStatus> get status async* {
@@ -32,18 +32,10 @@ class AuthRepoImpl implements AuthRepo {
       final loginResponce = await user.LogIn(email: email, password: password);
 
       if (loginResponce != null) {
-        await _storage.write(key: 'Uid', value: loginResponce.Uid);
-        _storage.write(
-            key: 'S_UserEntity', value: isuser == true ? 'USER' : 'OWNER');
-        UserUid = loginResponce.Uid;
-        await _storage.write(
-            key: 'LoginInfo', value: json.encode(loginResponce));
-        if (loginResponce.isverified) {
-          _storage.write(key: 'isUserVerified', value: 'yes');
-        }
-        if (loginResponce.isProfileCompleted) {
-          await _storage.write(key: 'isProfileCompleted', value: 'yes');
-        }
+        final _Uid = loginResponce.Uid;
+        await pref.setString('Uid', _Uid);
+        print(" okkkk ${loginResponce.Uid}");
+
         _controller.add(AuthenticationStatus.authenticated);
         return right(loginResponce);
       } else {
@@ -59,7 +51,8 @@ class AuthRepoImpl implements AuthRepo {
   Future<void> Logout() async {
     try {
       await user.Logout();
-      await _storage.deleteAll();
+      await pref.clear();
+
       _controller.add(AuthenticationStatus.unauthenticated);
     } on Exp catch (e) {
       Fail(exp: e);

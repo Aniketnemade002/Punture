@@ -29,6 +29,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> close() {
     _authStatusSubscription.cancel();
     _auth.dispose();
+
     return super.close();
   }
 

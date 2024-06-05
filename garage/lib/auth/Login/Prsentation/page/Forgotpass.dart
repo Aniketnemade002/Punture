@@ -20,6 +20,7 @@ class _ForgotPassScreenState extends State<ForgotPassScreen> {
   bool _isSubmitted = false;
 
   void handleSubmit() async {
+    FocusScope.of(context).unfocus();
     if (_email.isValid) {
       setState(() {
         _isSubmitted = true;
@@ -47,6 +48,7 @@ class _ForgotPassScreenState extends State<ForgotPassScreen> {
                       textColor: Colors.white,
                       fontSize: 16.0)
                   .then((value) => Future.delayed(Duration(seconds: 2), () {
+                        FocusScope.of(context).unfocus();
                         Navigator.pop(
                             context); // Navigate back to the previous screen
                       }))
@@ -105,10 +107,11 @@ class _ForgotPassScreenState extends State<ForgotPassScreen> {
                 fontWeight: FontWeight.bold,
               )),
           leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.arrow_back_ios, color: Kcolor.bg)),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios, color: Kcolor.bg),
+          ),
           backgroundColor: Kcolor.secondary,
           flexibleSpace: SafeArea(
             child: Container(
@@ -175,6 +178,7 @@ class _ForgotPassScreenState extends State<ForgotPassScreen> {
                   !_isSubmitted
                       ? handleSubmit
                       : () {
+                          FocusScope.of(context).unfocus();
                           Fluttertoast.showToast(
                               msg: "Reset Link Is Already Submitted.",
                               toastLength: Toast.LENGTH_SHORT,

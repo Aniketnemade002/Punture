@@ -149,21 +149,38 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 child: TextButton(
                   onPressed: () async {
                     if (_currentPage == widget.pages.length - 1) {
-                      await pref!.setBool('FirstRun', false);
+                      await Startpref!.setBool('FirstRun', false);
+                      await Run!.setBool('FirstRun', false);
 
-                      isuser == true
-                          ? Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LoginScreen(), //user
-                              ),
-                              (Route<dynamic> route) => false)
-                          : Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LoginScreen(), //owner
-                              ),
-                              (Route<dynamic> route) => false);
+                      if (WhoUser == true) {
+                        await Startpref!.setBool('WhoUser', true);
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginScreen(), //user
+                            ),
+                            (Route<dynamic> route) => false);
+                      } else {
+                        //.
+                        //.
+                        //.
+
+                        await Startpref!.setBool('WhoUser', false);
+
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginScreen(), //owner
+                            ),
+                            (Route<dynamic> route) => false);
+                      }
+
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(), //owner
+                          ),
+                          (Route<dynamic> route) => false);
                     } else {
                       _pageController.animateToPage(_currentPage + 1,
                           curve: Curves.easeInOutCubic,

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:garage/auth/Login/Prsentation/page/Login.dart';
+import 'package:garage/constant/Common/common.dart';
 import 'package:garage/constant/TextStyle/CustomText.dart';
 import 'package:garage/core/Validations/Butoonvalidator.dart';
 import 'package:garage/constant/OnBording/onbording.dart';
@@ -28,7 +29,13 @@ class _SlectScreen extends State<StatefulWidget> {
   ];
   @override
   void initState() {
-    isuser = true;
+    WhoUser = Startpref?.getBool('WhoUser') ?? false;
+    isuser = _active == 0 ? true : false;
+
+    print(
+        '++++++++++++++++++++IsUserr++++++++++++++++++++++++++++++++++++++    $isuser');
+    print(
+        '++++++++++++++++++++WhoUser++++++++++++++++++++++++++++++++++++++    $WhoUser');
   }
 
   @override
@@ -39,6 +46,7 @@ class _SlectScreen extends State<StatefulWidget> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(200),
         child: AppBar(
+          automaticallyImplyLeading: false,
           centerTitle: true,
           title: Text("Welcome",
               textAlign: TextAlign.right,
@@ -153,11 +161,32 @@ class _SlectScreen extends State<StatefulWidget> {
                                     controller: _pageController,
                                     onPageChanged: (int page) {
                                       setState(() {
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+                                        ///
+
                                         _active = page;
+                                        WhoUser = _active == 0 ? true : false;
                                         isuser = _active == 0 ? true : false;
 
                                         print(_active);
-                                        print(isuser);
+                                        print(WhoUser);
                                       });
                                     },
                                     itemCount: _pages.length,
@@ -207,10 +236,11 @@ class _SlectScreen extends State<StatefulWidget> {
                         onPressed: () => safeOnPressed(
                           context,
                           () async {
-                            await pref!.setString('UserEntity',
-                                isuser == true ? 'user' : 'owner');
-                            isuser == true
-                                ? pref?.getBool('FirstRun') ?? true
+                            await Startpref!.setString('UserEntity',
+                                WhoUser == true ? 'user' : 'owner');
+
+                            WhoUser == true
+                                ? Run?.getBool('FirstRun') ?? true
                                     ? Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -224,7 +254,7 @@ class _SlectScreen extends State<StatefulWidget> {
                                           builder: (context) => LoginScreen(),
                                         ),
                                       )
-                                : await pref?.getBool('FirstRun') ?? true
+                                : await Startpref?.getBool('FirstRun') ?? true
                                     ? Navigator.push(
                                         context,
                                         MaterialPageRoute(

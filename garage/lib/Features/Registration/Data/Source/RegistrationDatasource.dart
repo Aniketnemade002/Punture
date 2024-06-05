@@ -63,7 +63,10 @@ class UserRegisterDataSourceImpl implements UserRegisterDataSource {
         'Pin': pin,
       };
 
-      final result = await _db.collection('USER').doc(_Uid).set(userData);
+      final result = await _db
+          .collection('USER')
+          .doc(_Uid)
+          .set(userData, SetOptions(merge: true));
 
       return true;
     } catch (e) {
@@ -75,6 +78,7 @@ class UserRegisterDataSourceImpl implements UserRegisterDataSource {
 class OwnerRegisterDataSourceImpl implements OwnerRegisterRepoDataSource {
   final _fdb = FirebaseAuth.instance;
   final _db = FirebaseFirestore.instance;
+  final Timestamp LastSlotTime = Timestamp.now();
   @override
   Future<bool> OwnerRegister(
       {required String fcm,
@@ -93,6 +97,11 @@ class OwnerRegisterDataSourceImpl implements OwnerRegisterRepoDataSource {
     try {
       final String _Uid = _fdb.currentUser!.uid;
 
+      final CollectionReference SlotRef =
+          _db.collection('OWNER').doc(_Uid).collection('SLOTS');
+      final DocumentReference newSlotRef = SlotRef.doc();
+      final SlotID = SlotRef.id;
+
       final Map<String, dynamic> ownerData = {
         'FCM': fcm,
         'Village': village,
@@ -107,9 +116,19 @@ class OwnerRegisterDataSourceImpl implements OwnerRegisterRepoDataSource {
         'GeoLocation': geoLocation,
         'Pin': pin,
         'SID': SID,
+        'LastSlotTime': LastSlotTime,
+        'NoOfSlots': 0,
       };
 
-      await _db.collection('OWNER').doc(_Uid).set(ownerData);
+      await _db
+          .collection('OWNER')
+          .doc(_Uid)
+          .set(ownerData, SetOptions(merge: true));
+
+      await newSlotRef.set({
+        'SlotTime': LastSlotTime,
+        'SlotID': SlotID,
+      }, SetOptions(merge: true));
 
       return true;
     } catch (e) {

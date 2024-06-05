@@ -294,8 +294,8 @@ class OwnerWallet extends StatelessWidget {
                                                       .trim());
 
                                               final currentammount =
-                                                  amount ?? 0;
-                                              final Finalammount =
+                                                  amount != null ? amount : 0;
+                                              final int Finalammount =
                                                   CurrentBalence -
                                                       currentammount;
 

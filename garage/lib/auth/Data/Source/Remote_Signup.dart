@@ -4,7 +4,8 @@ import 'package:garage/constant/constant.dart';
 import 'package:garage/core/Error/Error.dart';
 
 abstract interface class SignUpDataSource {
-  Future<bool> SignUp({required String email, required String password});
+  Future<bool> UserSignUp({required String email, required String password});
+  Future<bool> OwnerSignUp({required String email, required String password});
   Future<bool> SendVerificationEmail();
   Future<bool> ReSendVerificationEmail();
 }
@@ -45,16 +46,41 @@ class SignUpDataSourceImpl implements SignUpDataSource {
   }
 
   @override
-  Future<bool> SignUp({required String email, required String password}) async {
+  Future<bool> OwnerSignUp(
+      {required String email, required String password}) async {
     try {
-      print("==========================   $Who   ======================");
       final users = await fdb.createUserWithEmailAndPassword(
           email: email, password: password);
 
       final Uid = users.user!.uid;
 
       try {
-        await db.collection(Who).doc(Uid).set({
+        await db.collection('OWNER').doc(Uid).set(
+          {
+            'UID': Uid,
+            'isProfileCompleted': false,
+          },
+        );
+        return true;
+      } catch (e) {
+        throw Exp(e);
+      }
+    } catch (e) {
+      throw Exp(e);
+    }
+  }
+
+  @override
+  Future<bool> UserSignUp(
+      {required String email, required String password}) async {
+    try {
+      final users = await fdb.createUserWithEmailAndPassword(
+          email: email, password: password);
+
+      final Uid = users.user!.uid;
+
+      try {
+        await db.collection('USER').doc(Uid).set({
           'UID': Uid,
           'isProfileCompleted': false,
         });

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garage/Fresh.dart';
 import 'package:garage/auth/Login/Prsentation/bloc/login_bloc.dart';
 import 'package:garage/auth/singup/Presentaion/page/SingUp.dart';
+import 'package:garage/constant/Common/common.dart';
 import 'package:garage/constant/TextStyle/CustomText.dart';
 import 'package:formz/formz.dart';
 import 'package:garage/auth/Login/Prsentation/page/Forgotpass.dart';
@@ -28,7 +29,7 @@ class LoginScreen extends StatelessWidget {
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SelectScreen(), //owner
+                      builder: (context) => const SelectScreen(), //owner
                     ),
                     (Route<dynamic> route) => false);
               },
@@ -75,36 +76,50 @@ class LoginScreen extends StatelessWidget {
       backgroundColor: Kcolor.secondary,
       body: BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
+          if (state.status.isInProgress) {
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) => LoadingPage());
+          }
           if (state.status.isFailure) {
+            FocusScope.of(context).unfocus();
             scaffoldMessengerKey.currentState
                 ?.hideCurrentSnackBar(); // Hide previous Snackbars
             scaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
                 behavior: SnackBarBehavior.floating,
                 actionOverflowThreshold: 0.25,
-                padding: EdgeInsets.all(0.5),
-                backgroundColor: Color.fromARGB(255, 255, 17, 0),
+                padding: const EdgeInsets.all(0.5),
+                backgroundColor: Kcolor.primary,
                 content: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Icon(
+                      Icons.clear,
+                      color: Kcolor.bg,
+                    ),
                     const Text(
-                      'Login Failed ',
+                      'Login Failed OR Account Dose not Exist ! ',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white),
                     ),
                     Icon(
-                      Icons.sms_failed,
+                      Icons.clear,
                       color: Kcolor.bg,
                     )
                   ],
                 ),
-                duration: Duration(seconds: 2)));
+                duration: const Duration(seconds: 2)));
+            Navigator.pop(context);
+            FocusScope.of(context).unfocus();
           }
           if (state.status.isSuccess) {
+            print('LoginDone  App Restart......$isuser ');
             RestartWidget.restartApp(context);
           }
         },
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Container(
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width,
@@ -127,7 +142,7 @@ class LoginScreen extends StatelessWidget {
                 surfaceTintColor: Kcolor.bg,
                 color: Kcolor.bg,
                 child: Padding(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -141,15 +156,15 @@ class LoginScreen extends StatelessWidget {
                             : Lottie.asset(
                                 'assets/images/Animation/Garage/owner.json'),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       _EmailInput(),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       _PasswordInput(),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       _ForgotPasswordButton(),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       _SubmitButton(),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       _SingUpButton(),
                     ],
                   ),
@@ -175,8 +190,8 @@ class _EmailInput extends StatelessWidget {
             labelText: 'Email',
             errorText:
                 state.email.isNotValid ? 'Enter a valid email address' : null,
-            prefixIcon: Icon(Icons.email),
-            border: OutlineInputBorder(),
+            prefixIcon: const Icon(Icons.email),
+            border: const OutlineInputBorder(),
           ),
         );
       },
@@ -209,8 +224,8 @@ class _PasswordInput extends StatelessWidget {
             errorText: state.password.isNotValid
                 ? _passwordErrorText(state.password.error)
                 : null,
-            prefixIcon: Icon(Icons.lock),
-            border: OutlineInputBorder(),
+            prefixIcon: const Icon(Icons.lock),
+            border: const OutlineInputBorder(),
           ),
         );
       },
@@ -235,7 +250,7 @@ class _SubmitButton extends StatelessWidget {
     return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         return state.status.isInProgress
-            ? CircularProgressIndicator()
+            ? const CircularProgressIndicator()
             : ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
@@ -274,7 +289,8 @@ class _ForgotPasswordButton extends StatelessWidget {
 
           Navigator.of(context).push(SlideRightRoute(page: ForgotPassScreen()));
         },
-        child: Text('Forgot Password?', style: TextStyle(color: Colors.blue)),
+        child: const Text('Forgot Password?',
+            style: TextStyle(color: Colors.blue)),
       ),
     );
   }
@@ -294,7 +310,7 @@ class _SingUpButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Dont have an account yet ?  ',
+            const Text('Dont have an account yet ?  ',
                 style: TextStyle(color: Colors.blue)),
             Text(' SignUp.',
                 style: TextStyle(

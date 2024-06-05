@@ -10,22 +10,29 @@ abstract interface class mainUserDataSource {
 }
 
 class mainUserDataSourceImpl implements mainUserDataSource {
-  final fdb = FirebaseAuth.instance;
-  final db = FirebaseFirestore.instance;
+  final _fdb = FirebaseAuth.instance;
+  final _db = FirebaseFirestore.instance;
 
   final String Who = isuser == true ? 'USER' : 'OWNER';
 
   @override
   Future<MainUserModal?> GetUser() async {
     try {
-      final _result = await db.collection(Who).doc(UserUid).get();
+      final _Uid = await _fdb.currentUser!.uid;
+      print('Getting User $_Uid');
 
+      final _result = await _db.collection('USER').doc(_Uid).get();
       if (_result.exists) {
-        return MainUserModal.fromJson(_result.data()!);
-      } else {
-        return null;
+        final data = _result.data();
+        if (data == null) {
+          return null;
+        }
+        print("Data is${data.toString()} ");
+
+        return MainUserModal.fromJson(data);
       }
     } catch (e) {
+      print("peint ${e.toString()}");
       throw Exp(e);
     }
   }

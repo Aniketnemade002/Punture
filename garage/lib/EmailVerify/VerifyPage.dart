@@ -50,6 +50,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   void onLogout() async {
     context.read<AuthBloc>().add(AuthenticationLogoutRequested());
     Future.delayed(Duration.zero, () async {
+      print('Verification  Done  App ......$isuser ');
+
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (BuildContext context) => const SelectScreen(),
@@ -72,8 +74,16 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       await _auth.currentUser!.reload();
       if (_auth.currentUser!.emailVerified) {
         timer.cancel();
-        await _authRepoImpl.Logout()
-            .then((value) => RestartWidget.restartApp(context));
+        context.read<AuthBloc>().add(AuthenticationLogoutRequested());
+        Future.delayed(Duration.zero, () async {
+          print('User Verified Logged Out Done App ......$isuser ');
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (BuildContext context) => const SelectScreen(),
+            ),
+            (Route route) => false,
+          );
+        });
       }
     });
   }

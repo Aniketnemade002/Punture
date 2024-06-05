@@ -10,6 +10,7 @@ import 'package:garage/Features/Registration/presentation/Widgets/GeoLocation_se
 import 'package:garage/Features/Registration/presentation/Widgets/loc.dart';
 import 'package:garage/Fresh.dart';
 import 'package:garage/auth/bloc/auth_bloc.dart';
+import 'package:garage/constant/Common/common.dart';
 import 'package:garage/constant/TextStyle/CustomText.dart';
 import 'package:garage/constant/constant.dart';
 import 'package:garage/constant/validationError.dart';
@@ -55,6 +56,7 @@ class OwnerRegisterScreen extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.logout, color: Kcolor.bg),
               onPressed: () async {
+                print("App LogOUt By Owner.....");
                 context.read<AuthBloc>().add(AuthenticationLogoutRequested());
                 Future.delayed(Duration.zero, () async {
                   Navigator.of(context).pushAndRemoveUntil(
@@ -139,6 +141,12 @@ class OwnerRegisterScreen extends StatelessWidget {
       backgroundColor: Kcolor.primary,
       body: BlocListener<OwnerRegisterBloc, OwnerRegisterState>(
         listener: (context, state) {
+          if (state.status.isInProgress) {
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) => LoadingPage());
+          }
           if (state.status.isFailure) {
             ScaffoldMessenger.of(context)
                 .hideCurrentSnackBar(); // Hide previous Snackbars
@@ -166,7 +174,12 @@ class OwnerRegisterScreen extends StatelessWidget {
               ),
             );
           }
+
           if (state.status.isSuccess) {
+            print(" App Registration Sucsess  ");
+
+            print(" App Restrating ..........!  ");
+
             RestartWidget.restartApp(context);
           }
         },
@@ -570,7 +583,7 @@ class _ServiceCostInput extends StatelessWidget {
             errorText: state.serviceCost.isNotValid
                 ? KError.serviceCostErrorToString(state.serviceCost.error)
                 : null,
-            prefixIcon: const Icon(Icons.attach_money),
+            prefixIcon: const Icon(Icons.currency_rupee_outlined),
             border: const OutlineInputBorder(),
           ),
         );

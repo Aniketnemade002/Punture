@@ -1,9 +1,10 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:garage/auth/Data/Source/Remote_User.dart';
-import 'package:garage/auth/Domain/Repo/userrepo.dart';
+import 'package:garage/auth/Domain/Repo/UserRepo.dart';
+
 import 'package:garage/core/Error/Error.dart';
 
-class UserRepoImpl implements UserRepo {
+class UserRepoImpl implements UserRepoo {
   final UserDataSourceImpl user = UserDataSourceImpl();
   @override
   Future<Either<Fail, bool>> PasswordReset({required String email}) async {
@@ -16,9 +17,18 @@ class UserRepoImpl implements UserRepo {
   }
 
   @override
-  Future<void> SaveFcmTocken({required String token}) async {
+  Future<void> OwnrSaveFcmTocken({required String token}) async {
     try {
-      await user.SaveFcmTocken(token: token);
+      await user.OwnerSaveFcmTocken(token: token);
+    } on Exp catch (e) {
+      Fail(exp: e);
+    }
+  }
+
+  @override
+  Future<void> UserSaveFcmTocken({required String token}) async {
+    try {
+      await user.UserSaveFcmTocken(token: token);
     } on Exp catch (e) {
       Fail(exp: e);
     }

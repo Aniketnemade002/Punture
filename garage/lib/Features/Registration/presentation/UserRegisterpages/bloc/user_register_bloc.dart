@@ -209,6 +209,7 @@ class UserRegisterBloc extends Bloc<UserRegisterEvent, UserRegisterState> {
     Emitter<UserRegisterState> emit,
   ) async {
     if (state.isvalid) {
+      emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       emit(state.copyWith(
           isProfileCompleted: true,
           fcm: FCMtoken,

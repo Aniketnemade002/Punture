@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:garage/auth/Data/RepoImp/SingUpRepoImpl.dart';
+import 'package:garage/constant/constant.dart';
 import 'package:garage/core/Error/Error.dart';
 import 'package:garage/core/Validations/EmailValidator.dart';
 import 'package:garage/core/Validations/PasswordValidator.dart';
@@ -53,21 +54,43 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       (event, emit) async {
         if (state.isValid) {
           emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
-          try {
-            final result = await _signUpRepoImpl.SingUp(
-                email: state.email.value.trim(),
-                password: state.confirmPassword.value.trim());
+          if (isuser) {
+            try {
+              final result = await _signUpRepoImpl.UserSingUp(
+                  email: state.email.value.trim(),
+                  password: state.confirmPassword.value.trim());
 
-            result.fold(
-              (l) {
-                Failure.handle(l.exp);
-                emit(state.copyWith(status: FormzSubmissionStatus.failure));
-              },
-              (r) => r == true
-                  ? emit(state.copyWith(status: FormzSubmissionStatus.success))
-                  : emit(state.copyWith(status: FormzSubmissionStatus.failure)),
-            );
-          } catch (e) {}
+              result.fold(
+                (l) {
+                  Failure.handle(l.exp);
+                  emit(state.copyWith(status: FormzSubmissionStatus.failure));
+                },
+                (r) => r == true
+                    ? emit(
+                        state.copyWith(status: FormzSubmissionStatus.success))
+                    : emit(
+                        state.copyWith(status: FormzSubmissionStatus.failure)),
+              );
+            } catch (e) {}
+          } else {
+            try {
+              final result = await _signUpRepoImpl.OwnerSingUp(
+                  email: state.email.value.trim(),
+                  password: state.confirmPassword.value.trim());
+
+              result.fold(
+                (l) {
+                  Failure.handle(l.exp);
+                  emit(state.copyWith(status: FormzSubmissionStatus.failure));
+                },
+                (r) => r == true
+                    ? emit(
+                        state.copyWith(status: FormzSubmissionStatus.success))
+                    : emit(
+                        state.copyWith(status: FormzSubmissionStatus.failure)),
+              );
+            } catch (e) {}
+          }
         } else {
           emit(state.copyWith(status: FormzSubmissionStatus.failure));
         }

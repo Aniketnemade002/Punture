@@ -12,7 +12,7 @@ abstract interface class UserDataSource {
   Future<bool> isverified();
   Future<bool> PasswordReset({required String email});
   Future<void> Logout();
-  Future<void> SaveFcmTocken({required String token});
+  Future<void> OwnerSaveFcmTocken({required String token});
 
   Future<LoginResponseModal?> LogIn({
     required String email,
@@ -23,36 +23,43 @@ abstract interface class UserDataSource {
 class UserDataSourceImpl implements UserDataSource {
   final fdb = FirebaseAuth.instance;
   final db = FirebaseFirestore.instance;
+
   final String Who = isuser == true ? 'USER' : 'OWNER';
 
   @override
   Future<LoginResponseModal?> LogIn(
       {required String email, required String password}) async {
+    print("got.");
     try {
-      final users = await fdb.signInWithEmailAndPassword(
+      final userCredential = await fdb.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      final Uid = users.user!.uid;
+      final Uid = userCredential.user!.uid;
+      final isVerified = userCredential.user!.emailVerified;
+      print("Values got +++");
+      print("Values got +++ who is 8888888888888  $Who");
 
-      final isVerified = users.user!.emailVerified;
+      await pref.setString('S_UserEntity', Who);
+      print("Values got ++++++++");
+      final DocumentSnapshot<Map<String, dynamic>> snap =
+          await db.collection(Who).doc(Uid).get();
+      print("Values  ++++++++");
+      if (snap.exists) {
+        print("${snap.data()}");
+        final isProfileCompleted = snap.data()!['isProfileCompleted'];
 
-      try {
-        final DocumentSnapshot<Map<String, dynamic>> snap =
-            await db.collection(Who).doc(Uid).get();
-
-        if (snap.exists) {
-          return LoginResponseModal.fromJson({
-            'uid': Uid,
-            'isProfileCompleted': snap['isProfileCompleted'],
-            'isverified': isVerified
-          });
-        } else {
-          return null;
-        }
-      } catch (e) {
-        throw Exp(e);
+        final result = LoginResponseModal(
+          Uid: Uid,
+          isProfileCompleted: isProfileCompleted,
+          isverified: isVerified,
+        );
+        print("Values got +++++++++++++++");
+        return result;
+      } else {
+        // User does not exist
+        return null;
       }
     } catch (e) {
       throw Exp(e);
@@ -94,13 +101,33 @@ class UserDataSourceImpl implements UserDataSource {
   }
 
   @override
-  Future<void> SaveFcmTocken({required String token}) async {
+  Future<void> OwnerSaveFcmTocken({required String token}) async {
     try {
       final Uid = await fdb.currentUser!.uid;
+      print("Previous Uid $UserUid ");
+      print("Previous Uid $Uid ");
+      print("FCM Token $token ");
 
-      await db.collection(Who).doc(Uid).set({
-        'Fcm': FieldValue.arrayUnion([token])
-      });
+      await db
+          .collection('OWNER')
+          .doc(Uid)
+          .set({'FCM': token}, SetOptions(merge: true));
+    } catch (e) {
+      throw Exp(e);
+    }
+  }
+
+  Future<void> UserSaveFcmTocken({required String token}) async {
+    try {
+      final Uid = await fdb.currentUser!.uid;
+      print("Previous Uid $UserUid ");
+      print("Previous Uid $Uid ");
+      print("FCM Token $token ");
+
+      await db
+          .collection('USER')
+          .doc(Uid)
+          .set({'FCM': token}, SetOptions(merge: true));
     } catch (e) {
       throw Exp(e);
     }

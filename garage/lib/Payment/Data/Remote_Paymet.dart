@@ -11,8 +11,10 @@ class OwnerPaymentDataSource {
     try {
       final _UID = await _fdb.currentUser!.uid;
 
-      final Result =
-          await _db.collection('USER').doc(_UID).set({'Wallet': Ammount});
+      final Result = await _db
+          .collection('USER')
+          .doc(_UID)
+          .set({'Wallet': Ammount}, SetOptions(merge: true));
       return true;
     } catch (e) {
       throw Exp(e);
@@ -26,7 +28,7 @@ class OwnerPaymentDataSource {
       final Result = await _db.collection('USER').doc(_UID).get();
 
       if (Result.exists) {
-        final data = Result.data()?['Wallet'];
+        final data = Result['Wallet'];
         return data;
       } else {
         return 0;
@@ -43,7 +45,10 @@ class UserPaymentDataSource {
   Future<bool> Pay(int Ammount) async {
     try {
       final _UID = await _fdb.currentUser!.uid;
-      await _db.collection('OWNER').doc(_UID).set({'Wallet': Ammount});
+      await _db
+          .collection('OWNER')
+          .doc(_UID)
+          .set({'Wallet': Ammount}, SetOptions(merge: true));
       return true;
     } catch (e) {
       throw Exp(e);
@@ -57,7 +62,7 @@ class UserPaymentDataSource {
       final Result = await _db.collection('OWNER').doc(_UID).get();
 
       if (Result.exists) {
-        final data = Result.data()?['Wallet'];
+        final data = Result['Wallet'];
         return data;
       } else {
         return 0;

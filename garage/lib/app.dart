@@ -8,6 +8,22 @@
 //    return Garages.map((garage)=> Garagemodal.fromjson(Garage)).toList
 
 //    }
+
+// String fcm,
+//  String village,
+//  String Address,
+//  int ServiceCost,
+//  int wallet,
+//  bool isProfileCompleted,
+//  String OwnerName,
+//  String GarageName,
+//  String email,
+//  int mobileNo,
+// GeoPoint geoLocation,
+//  int pin,
+//  int SID
+//  TimeStampLast SlotTime,
+//         int NoOfSlots
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -17,10 +33,19 @@ import 'package:garage/Features/Registration/presentation/OwnerRegisterPages/blo
 import 'package:garage/Features/Registration/presentation/UserRegisterpages/Pages/UserRegisterScreen.dart';
 import 'package:garage/Features/Registration/presentation/UserRegisterpages/bloc/user_register_bloc.dart';
 import 'package:garage/Features/owner/Data/RepoImp/MainOwnerRepoImpl.dart';
+import 'package:garage/Features/owner/Prsentation/bloc/Owner_dashbord/bloc/o_dash_bord_bloc.dart';
+import 'package:garage/Features/owner/Prsentation/bloc/Slot_bloc/bloc/slot_bloc.dart';
+import 'package:garage/Features/owner/Prsentation/page/OwnerDashbord/OwnerDashBord.dart';
 import 'package:garage/Features/user/Data/RepoImp/MainUserImpl.dart';
+import 'package:garage/Features/user/Prsentation/bloc/Booking_bloc/bloc/booking_bloc.dart';
+import 'package:garage/Features/user/Prsentation/bloc/UserDash_bloc/bloc/user_dash_bloc.dart';
+import 'package:garage/Features/user/Prsentation/page/Booking/BookingPage.dart';
+import 'package:garage/Features/user/Prsentation/page/UserDash/UserDashbord.dart';
+
 import 'package:garage/Fresh.dart';
 import 'package:garage/Payment/Presentation/bloc/payment_bloc.dart';
 import 'package:garage/Payment/Presentation/pages/OwnerWallet.dart';
+import 'package:garage/Spalsh.dart';
 
 import 'package:garage/auth/Data/RepoImp/AuthRepoImpl.dart';
 import 'package:garage/auth/Data/RepoImp/UserRepoImpl.dart';
@@ -30,7 +55,7 @@ import 'package:garage/auth/singup/Presentaion/bloc/singup_bloc.dart';
 import 'package:garage/constant/constant.dart';
 import 'package:garage/core/Error/Error.dart';
 import 'package:garage/core/Validations/connectivity/connectivity_bloc.dart';
-import 'package:garage/dashbord.dart';
+
 import 'package:slide_to_act/slide_to_act.dart';
 
 class app extends StatefulWidget {
@@ -67,6 +92,7 @@ class _appState extends State<app> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _authenticationRepository.dispose();
+    super.dispose();
   }
 
   @override
@@ -99,10 +125,22 @@ class _appState extends State<app> with WidgetsBindingObserver {
                 create: (_) => AuthBloc(
                     authenticationRepository: _authenticationRepository)),
             BlocProvider(create: (_) => OwnerRegisterBloc()),
+            BlocProvider(create: (_) => SlotBloc()..add(LastSlotRequested())),
             BlocProvider(create: (_) => UserRegisterBloc()),
             BlocProvider(
                 create: (_) => PaymentBloc()
-                  ..add(isuser ? UserFetchBalance() : OwnerFetchBalance()))
+                  ..add(isuser ? UserFetchBalance() : OwnerFetchBalance())),
+            BlocProvider(create: (_) => UserDashBloc()
+                // ..add(GetUser())
+                // ..add(GetUserBookingList())
+                // ..add(GetUserHistoryList()),
+                ),
+            BlocProvider(create: (_) => BookingBloc()),
+            BlocProvider(create: (_) => ODashBordBloc()
+                // ..add(GetOwner())
+                // ..add(GetOwnerBookingList())
+                // ..add(GetOwnerHistoryList()),
+                ),
           ],
           child: appstart(
             userUid: widget.WhoUid,
@@ -133,7 +171,7 @@ class appstart extends StatefulWidget {
 }
 
 class _appstartState extends State<appstart> {
-  final _navigatorKey = GlobalKey<NavigatorState>();
+  final _navigatorKey = MainKey;
 
   NavigatorState get _navigator => _navigatorKey.currentState!;
 
@@ -190,126 +228,145 @@ class _appstartState extends State<appstart> {
             useMaterial3: true,
           ),
           navigatorKey: _navigatorKey,
-          home: OwnerWallet()
+          builder: (context, child) {
+            print("Building user app again+");
+            return BlocListener<AuthBloc, AuthState>(
+              listener: (context, state) async {
+                print("Building user app again++");
+                UserRepoImpl _UserRepo = UserRepoImpl();
+                AuthRepoImpl _auth = AuthRepoImpl();
+                MainOwnerRepoImpl _mainOwnerRepo = MainOwnerRepoImpl();
+                MainUserRepoImpl _mainUserRepo = MainUserRepoImpl();
+                FlutterNativeSplash.remove();
 
-          // builder: (context, child) {
-          //   return BlocListener<AuthBloc, AuthState>(
-          //     listener: (context, state) async {
-          //       UserRepoImpl _UserRepo = UserRepoImpl();
-          //       AuthRepoImpl _auth = AuthRepoImpl();
-          //       MainOwnerRepoImpl _mainOwnerRepo = MainOwnerRepoImpl();
-          //       MainUserRepoImpl _mainUserRepo = MainUserRepoImpl();
+                if (state.status == AuthenticationStatus.unauthenticated) {
+                  _navigator.push(MaterialPageRoute(
+                      builder: (BuildContext context) => UserDashBord()));
+                }
 
-          //       if (state.status == AuthenticationStatus.unauthenticated) {
-          //         _navigator.push(MaterialPageRoute(
-          //             builder: (BuildContext context) => const SelectScreen()));
-          //       }
+                if (state.status == AuthenticationStatus.unknown) {
+                  print("App Enter Unknown");
+                  final isloggin = await _auth.islogedin();
+                  final isverified = await _auth.isverified();
 
-          //       if (state.status == AuthenticationStatus.unknown) {
-          //         final isloggin = await _auth.islogedin();
-          //         final isverified = await _auth.isverified();
+                  var isLogiinResult;
+                  isloggin.fold((l) {
+                    Failure.handle(l.exp);
+                    isLogiinResult == false;
+                  }, (r) {
+                    if (r == true) {
+                      isLogiinResult = true;
+                    } else {
+                      isLogiinResult = false;
+                    }
+                  });
 
-          //         var isLogiinResult;
-          //         isloggin.fold(
-          //           (l) {
-          //             Failure.handle(l.exp);
-          //             isLogiinResult == false;
-          //           },
-          //           (r) => r == true
-          //               ? isLogiinResult == true
-          //               : isLogiinResult == false,
-          //         );
+                  if (isLogiinResult == true) {
+                    if (isverified) {
+                      if (isuser) {
+                        if (widget.UserFcmToken != null &&
+                            widget.UserFcmToken != '') {
+                          await _UserRepo.UserSaveFcmTocken(
+                              token: widget.UserFcmToken ?? '');
+                          print("App callling _mainUserRepo...... ");
 
-          //         FlutterNativeSplash.remove();
+                          final mainUserResult = await _mainUserRepo.GetUser();
 
-          //         if (isLogiinResult == true) {
-          //           if (isverified) {
-          //             if (isuser) {
-          //               if (widget.UserFcmToken != null &&
-          //                   widget.UserFcmToken != '') {
-          //                 await _UserRepo.SaveFcmTocken(
-          //                     token: widget.UserFcmToken ?? '');
+                          print("App call _mainUserRepo ...Data Got !! ");
+                          mainUserResult.fold(
+                            (l) {
+                              Failure.handle(l.exp);
 
-          //                 final mainUserResult = await _mainUserRepo.GetUser();
-          //                 mainUserResult.fold(
-          //                   (l) {
-          //                     Failure.handle(l.exp);
-          //                     _navigator.push(MaterialPageRoute(
-          //                         builder: (BuildContext context) =>
-          //                             const SelectScreen()));
-          //                   },
-          //                   (r) {
-          //                     if (r!.isProfileCompleted) {
-          //                       print(
-          //                           "===============================  In App======");
-          //                       _navigator.push(
-          //                         MaterialPageRoute(
-          //                           builder: (BuildContext context) =>
-          //                               const UserDash(),
-          //                         ),
-          //                       );
-          //                     } else {
-          //                       _navigator.push(
-          //                         MaterialPageRoute(
-          //                           builder: (BuildContext context) =>
-          //                               OwnerRegisterScreen(),
-          //                         ),
-          //                       );
-          //                     }
-          //                   },
-          //                 );
-          //               }
-          //             } else {
-          //               if (widget.UserFcmToken != null &&
-          //                   widget.UserFcmToken != '') {
-          //                 await _UserRepo.SaveFcmTocken(
-          //                     token: widget.UserFcmToken ?? '');
-          //               }
+                              _navigator.push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const SelectScreen()));
+                            },
+                            (r) {
+                              final _isProfileCompleted = r!.isProfileCompleted;
 
-          //               final mainOwnerResult = await _mainOwnerRepo.GetOwner();
-          //               mainOwnerResult.fold(
-          //                 (l) {
-          //                   Failure.handle(l.exp);
-          //                   _navigator.push(MaterialPageRoute(
-          //                       builder: (BuildContext context) =>
-          //                           const SelectScreen()));
-          //                 },
-          //                 (r) {
-          //                   if (r!.isProfileCompleted) {
-          //                     print(
-          //                         "===============================  In App======");
-          //                     _navigator.push(
-          //                       MaterialPageRoute(
-          //                         builder: (BuildContext context) =>
-          //                             const UserDash(),
-          //                       ),
-          //                     );
-          //                   } else {
-          //                     _navigator.push(
-          //                       MaterialPageRoute(
-          //                         builder: (BuildContext context) =>
-          //                             UserRegisterScreen(),
-          //                       ),
-          //                     );
-          //                   }
-          //                 },
-          //               );
-          //             }
-          //           } else {
-          //             _navigator.push(MaterialPageRoute(
-          //                 builder: (BuildContext context) =>
-          //                     EmailVerificationScreen()));
-          //           }
-          //         } else {
-          //           _navigator.push(MaterialPageRoute(
-          //               builder: (BuildContext context) => const SelectScreen()));
-          //         }
-          //       }
-          //     },
-          //     child: child,
-          //   );
-          // },
-          ),
+                              if (_isProfileCompleted) {
+                                print(
+                                    "=================== In App  User ======");
+                                _navigator.push(
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        UserDashBord(),
+                                  ),
+                                );
+                              } else {
+                                _navigator.push(
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        UserRegisterScreen(),
+                                  ),
+                                );
+                              }
+                            },
+                          );
+                        }
+                      } else {
+                        if (widget.UserFcmToken != null &&
+                            widget.UserFcmToken != '') {
+                          await _UserRepo.OwnrSaveFcmTocken(
+                              token: widget.UserFcmToken ?? '');
+                        }
+
+                        print("App callingg OwnerUserRepo .... !! ");
+
+                        final mainOwnerResult = await _mainOwnerRepo.GetOwner();
+                        print("App call OwnerUserRepo ...Data Got !! ");
+
+                        mainOwnerResult.fold(
+                          (l) {
+                            Failure.handle(l.exp);
+
+                            print("App call OwnerUserRepo  Fail ");
+                            _navigator.push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const SelectScreen()));
+                          },
+                          (r) {
+                            if (r!.isProfileCompleted) {
+                              _navigator.push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      OwnerDashBord(),
+                                ),
+                              );
+                            } else {
+                              print("App call Owne Registration Screen  Got");
+
+                              _navigator.push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      OwnerRegisterScreen(),
+                                ),
+                              );
+                            }
+                          },
+                        );
+                      }
+                    } else {
+                      _navigator.push(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              EmailVerificationScreen()));
+                    }
+                  } else {
+                    print('Golure Golure');
+                    _navigator.push(MaterialPageRoute(
+                        builder: (BuildContext context) => UserDashBord()));
+                  }
+                }
+              },
+              child: child,
+            );
+          },
+          onGenerateRoute: (setings) {
+            print("Restart Screen ....! ");
+
+            return MaterialPageRoute(
+                builder: (BuildContext context) => const AppSplash());
+          }),
     ));
   }
 }
@@ -330,6 +387,52 @@ class DismissKeyboard extends StatelessWidget {
       },
       child: child,
     );
+  }
+}
+
+class NotifyServiceDone {
+  static void showDialogBox(String title, String message) {
+    if (MainKey.currentState != null) {
+      showDialog(
+        context: MainKey.currentContext!,
+        builder: (context) => AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      print(
+          'Scaffold key is not initialized or scaffold is not attached to the widget tree.');
+    }
+  }
+}
+
+class NotifyBooking {
+  static void showDialogBox(String title, String message) {
+    if (MainKey.currentState != null) {
+      showDialog(
+        context: MainKey.currentContext!,
+        builder: (context) => AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      print(
+          'Scaffold key is not initialized or scaffold is not attached to the widget tree.');
+    }
   }
 }
 

@@ -8,6 +8,7 @@ class MainUserModal extends MainUser {
       required super.wallet,
       required super.isProfileCompleted,
       required super.name,
+      required super.uid,
       required super.email,
       required super.mobileNo,
       required super.geoLocation,
@@ -24,15 +25,16 @@ class MainUserModal extends MainUser {
 //         'Pin': pin,
   factory MainUserModal.fromJson(Map<String, dynamic> json) {
     return MainUserModal(
-      fcm: json['FCM'] as String,
-      village: json['Village'] as String,
-      wallet: json['Wallet'] as int,
-      isProfileCompleted: json['isProfileCompleted'] as bool,
-      name: json['name'] as String,
-      email: json['Email'] as String,
-      mobileNo: json['MobileNo'] as int,
-      geoLocation: json['GeoLocation'] as GeoPoint,
-      pin: json['Pin'] as int,
+      fcm: json['FCM'] ?? '',
+      village: json['Village'] ?? '',
+      wallet: json['Wallet'] ?? 0,
+      isProfileCompleted: json['isProfileCompleted'] ?? false,
+      name: json['name'] ?? '',
+      email: json['Email'] ?? '',
+      mobileNo: json['MobileNo'] ?? 0,
+      geoLocation: json['GeoLocation'] ?? null,
+      pin: json['Pin'] ?? 0,
+      uid: json['UID'] ?? '',
     );
   }
 
@@ -47,6 +49,7 @@ class MainUserModal extends MainUser {
       'mobileNo': mobileNo,
       'GeoLocation': geoLocation,
       'Pin': pin,
+      'UID': uid,
     };
   }
 }

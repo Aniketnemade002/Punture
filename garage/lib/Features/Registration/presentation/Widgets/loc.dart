@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:garage/constant/TextStyle/CustomText.dart';
 import 'package:garage/constant/constant.dart';
@@ -269,5 +270,96 @@ class _SelectionDialogState extends State<SelectionDialog> {
       default:
         return null;
     }
+  }
+}
+
+class SearchVillageButton extends StatefulWidget {
+  final Function(String) onSelectionDone;
+
+  const SearchVillageButton({Key? key, required this.onSelectionDone})
+      : super(key: key);
+
+  @override
+  _SearchVillageButton createState() => _SearchVillageButton();
+}
+
+class _SearchVillageButton extends State<SearchVillageButton> {
+  String? _selectedVillage;
+  void _openSelectionDialog() async {
+    String? result = await showDialog(
+      context: context,
+      builder: (BuildContext context) => SelectionDialog(),
+    );
+    if (result != null) {
+      setState(() {
+        _selectedVillage = result;
+      });
+    }
+    if (result != null) {
+      widget.onSelectionDone(result);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: _openSelectionDialog,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Kcolor.button,
+            shadowColor: Kcolor.button,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(7)),
+            ),
+          ),
+          child: Text(
+            _selectedVillage != null ? 'ReSelect Location' : 'Select Location',
+            style: TextStyle(fontFamily: fontstyles.Gpop, color: Kcolor.bg),
+          ),
+        ),
+        SizedBox(height: 10),
+        _selectedVillage != null
+            ? Container(
+                height: 30,
+                width: 290,
+                decoration: BoxDecoration(
+                  color: Kcolor.primary,
+                  borderRadius: BorderRadius.circular(
+                      5), // Adjust the radius for round edges
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.thumb_up,
+                      color: Kcolor.bg,
+                    ),
+                    SizedBox(
+                        width:
+                            5), // Adjust the spacing between the icon and text
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 200,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Text(
+                              'Selected Village: $_selectedVillage',
+                              style: TextStyle(
+                                  fontFamily: fontstyles.Gpop,
+                                  color: Kcolor.bg),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
+            : SizedBox.shrink(),
+        SizedBox(height: 10),
+      ],
+    );
   }
 }

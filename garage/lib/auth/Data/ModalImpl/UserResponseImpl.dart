@@ -20,7 +20,7 @@ class LoginResponseModal extends LoginResponse {
   }) =>
       LoginResponseModal(
         Uid: Uid ?? this.Uid,
-        isProfileCompleted: isProfileCompleted ?? this.isProfileCompleted,
-        isverified: isverified ?? this.isverified,
+        isProfileCompleted: isProfileCompleted,
+        isverified: isverified,
       );
 }

@@ -15,7 +15,8 @@ class MainOwnerModal extends MainOwner {
       required super.geoLocation,
       required super.pin,
       required super.Address,
-      required super.SID});
+      required super.SID,
+      required super.LastSlotTime});
 
   factory MainOwnerModal.fromJson(Map<String, dynamic> json) {
     return MainOwnerModal(
@@ -23,15 +24,16 @@ class MainOwnerModal extends MainOwner {
       village: json['Village'] ?? '',
       Address: json['Address'] ?? '',
       serviceCost: json['ServiceCost'] ?? 0,
-      wallet: json['Wallet'] as int,
-      isProfileCompleted: json['isProfileCompleted'] as bool,
-      ownername: json['OwnerName'] as String,
-      garageName: json['GarageName'] as String,
-      email: json['Email'] as String,
-      mobileNo: json['MobileNo'] as int,
-      geoLocation: json['GeoLocation'] as GeoPoint,
-      pin: json['Pin'] as int,
-      SID: json['SID'] as int,
+      wallet: json['Wallet'] ?? 0,
+      isProfileCompleted: json['isProfileCompleted'] ?? false,
+      ownername: json['OwnerName'] ?? '',
+      garageName: json['GarageName'] ?? '',
+      email: json['Email'] ?? '',
+      mobileNo: json['MobileNo'] ?? 0,
+      geoLocation: json['GeoLocation'] ?? GeoPoint(0, 0),
+      pin: json['Pin'] ?? 0,
+      SID: json['SID'] ?? 0,
+      LastSlotTime: json['LastSlotTime'] ?? Timestamp.now(),
     );
   }
 
@@ -50,6 +52,7 @@ class MainOwnerModal extends MainOwner {
       'GeoLocation': geoLocation,
       'Pin': pin,
       'SID': SID,
+      'LastSlotTime': LastSlotTime
     };
   }
 }

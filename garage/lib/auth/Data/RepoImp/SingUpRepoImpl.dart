@@ -27,11 +27,24 @@ class SignUpRepoImpl implements SignUpRepo {
   }
 
   @override
-  Future<Either<Fail, bool>> SingUp(
+  Future<Either<Fail, bool>> OwnerSingUp(
       {required String email, required String password}) async {
     try {
       final result =
-          await _RemoteDataSource.SignUp(email: email, password: password);
+          await _RemoteDataSource.OwnerSignUp(email: email, password: password);
+
+      return right(result);
+    } on Exp catch (e) {
+      return left(Fail(exp: e.massage));
+    }
+  }
+
+  @override
+  Future<Either<Fail, bool>> UserSingUp(
+      {required String email, required String password}) async {
+    try {
+      final result =
+          await _RemoteDataSource.UserSignUp(email: email, password: password);
 
       return right(result);
     } on Exp catch (e) {

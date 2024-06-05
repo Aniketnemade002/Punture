@@ -90,7 +90,9 @@ class SignupScreen extends StatelessWidget {
           if (state.status.isSuccess) {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
-              ..showSnackBar(SnackBar(content: Text('Signup Success')));
+              ..showSnackBar(const SnackBar(content: Text('Signup Success')));
+
+            print('SingUP Done  App Restart......$isuser ');
 
             Navigator.of(context).pushAndRemoveUntil(
               SlideLeftRoute(page: EmailVerificationScreen()),

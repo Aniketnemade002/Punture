@@ -39,8 +39,11 @@ class Kcolor {
 // 13094748889332409102
 
 late bool isuser;
+late bool WhoUser;
 bool isinterneconnected = false;
-late SharedPreferences? pref;
+late SharedPreferences Run;
+late SharedPreferences pref;
+late SharedPreferences Startpref;
 late bool? GodMode;
 late String UserUid;
 late String? FCMtoken;
@@ -50,12 +53,15 @@ late String? isProfileCompleted;
 late GeoPoint? GetgeoPoint;
 late String? GetVillage;
 late int CurrentBalence;
+final MainKey = GlobalKey<NavigatorState>();
 
 final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
-const storage = FlutterSecureStorage(
-    iOptions: IOSOptions(accountName: 'Punture'),
-    aOptions: AndroidOptions(encryptedSharedPreferences: true));
+AndroidOptions _getAndroidOptions() => const AndroidOptions(
+      encryptedSharedPreferences: true,
+    );
+final FlutterSecureStorage storage =
+    FlutterSecureStorage(aOptions: _getAndroidOptions());
 
 
 
