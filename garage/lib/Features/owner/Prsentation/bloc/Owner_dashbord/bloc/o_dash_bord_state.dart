@@ -17,24 +17,6 @@ class GotOwner extends ODashBordState {
   List<Object> get props => [owner];
 }
 
-class GotBookingList extends ODashBordState {
-  final List<OwnerBookingModal> BookingList;
-
-  GotBookingList({required this.BookingList});
-
-  @override
-  List<Object> get props => [BookingList];
-}
-
-class GotHistorygList extends ODashBordState {
-  final List<OwnerHistoryModal> HistoryBookingList;
-
-  GotHistorygList({required this.HistoryBookingList});
-
-  @override
-  List<Object> get props => [HistoryBookingList];
-}
-
 class OwnerLoading extends ODashBordState {}
 
 class OwnerLoadFaild extends ODashBordState {}
@@ -46,24 +28,15 @@ class OwnerLoadFaild extends ODashBordState {}
 ///
 ///
 
-class Owner_LoadingHistorygList extends ODashBordState {}
-
-class Owner_LoadingFaild_LoadingHistorygList extends ODashBordState {}
-
-class Owner_No_Data_HistorygList extends ODashBordState {}
-
 ///
 ///
 ///
 ///
 ///
 ///
-
-class Owner_Loading_BookingList extends ODashBordState {}
-
-class Owner_Faild_BookingList extends ODashBordState {}
-
-class Owner_NoData_BookingList extends ODashBordState {}
+///
+///
+///
 
 ///
 ///

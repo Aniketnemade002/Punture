@@ -4,6 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garage/Fresh.dart';
+import 'package:garage/auth/bloc/auth_bloc.dart';
 import 'package:garage/constant/Common/common.dart';
 import 'package:garage/constant/constant.dart';
 import 'package:garage/constant/TextStyle/CustomText.dart';
@@ -678,6 +681,58 @@ class CallButton extends StatelessWidget {
         Icons.phone,
         color: Kcolor.bg,
       ),
+    );
+  }
+}
+
+class LogOutButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      surfaceTintColor: Kcolor.bg,
+      title: Text(
+        'Want to LogOut ?',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+          color: Kcolor.TextB,
+        ),
+      ),
+      content: Row(
+        children: [
+          Icon(
+            Icons.info,
+            size: 18,
+            color: Kcolor.button,
+          ),
+          Text(
+            'Are You Sure.',
+            style: TextStyle(fontFamily: fontstyles.Gpop),
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () => Navigator.pop(context, 'Cancel'),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () async {
+            context.read<AuthBloc>().add(AuthenticationLogoutRequested());
+            Future.delayed(Duration.zero, () async {
+              print('Verification  Done  App ......$isuser ');
+
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => const SelectScreen(),
+                ),
+                (Route route) => false,
+              );
+            });
+          },
+          child: const Text('Yes'),
+        ),
+      ],
     );
   }
 }

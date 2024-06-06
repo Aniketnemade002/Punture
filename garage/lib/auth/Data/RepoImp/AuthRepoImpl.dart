@@ -29,6 +29,7 @@ class AuthRepoImpl implements AuthRepo {
   Future<Either<Fail, LoginResponseModal?>> Login(
       {required String email, required String password}) async {
     try {
+      print("AHHHHH OOYYGG.++++++++++++${isuser}");
       final loginResponce = await user.LogIn(email: email, password: password);
 
       if (loginResponce != null) {

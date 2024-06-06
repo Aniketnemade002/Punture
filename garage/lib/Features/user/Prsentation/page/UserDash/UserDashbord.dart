@@ -10,8 +10,12 @@ import 'package:garage/Features/owner/Prsentation/page/OwnerDashbord/OwnerPages.
 import 'package:garage/Features/user/Data/ModalImpl/UserBookingHistory.dart';
 import 'package:garage/Features/user/Data/ModalImpl/UserBookingModalIMPL.dart';
 import 'package:garage/Features/user/Data/ModalImpl/UserModalImpl.dart';
+import 'package:garage/Features/user/Data/RepoImp/MainUserImpl.dart';
 import 'package:garage/Features/user/Prsentation/bloc/Booking_bloc/bloc/booking_bloc.dart';
+import 'package:garage/Features/user/Prsentation/bloc/UserBooing_bloc/user_booking_bloc_bloc.dart';
 import 'package:garage/Features/user/Prsentation/bloc/UserDash_bloc/bloc/user_dash_bloc.dart';
+import 'package:garage/Features/user/Prsentation/bloc/UserHistory_bloc/user_history_bloc_bloc.dart';
+import 'package:garage/Features/user/Prsentation/page/Booking/BookingPage.dart';
 import 'package:garage/Features/user/Prsentation/page/Booking/GaragPage.dart';
 import 'package:garage/Features/user/Prsentation/page/UserDash/UserBookingList.dart';
 import 'package:garage/Features/user/Prsentation/page/UserDash/Pages.dart';
@@ -44,12 +48,13 @@ class _UserDashBordState extends State<UserDashBord>
   bool isHistoryLoading = false;
   final ScrollController _scrollController = ScrollController();
   final ScrollController _scrollController2 = ScrollController();
+  UserBookingDataRepoImpl _userBookingDataRepoImpl = UserBookingDataRepoImpl();
   late TabController _tabController;
 
   @override
   void initState() {
-    context.read<UserDashBloc>().add(GetUserBookingList());
-    context.read<UserDashBloc>().add(GetUserHistoryList());
+    context.read<UserBookingBlocBloc>().add(GetUserBookingList());
+    context.read<UserHistoryBlocBloc>().add(GetUserHistoryList());
     _scrollController.addListener(_onScroll);
     _scrollController2.addListener(_onScroll2);
     _tabController = TabController(length: 1, vsync: this);
@@ -197,23 +202,6 @@ class _UserDashBordState extends State<UserDashBord>
           isLoading = true;
           MainUser = state.user;
         }
-
-        // if (state is GotBookingList) {
-        //   isBookingLoading = true;
-        //   UserbookingItems = state.BookingList;
-        //   print(
-        //       "+++++++++++++++++++++++++++++++++++++++++++=${state.BookingList.length}");
-        // }
-        // if (state is GotHistorygList) {
-        //   isHistoryLoading = true;
-        //   UserHistorybookingItems = state.HistoryBookingList;
-        // }
-        if (state is User_NoData_BookingList) {
-          isBDataFound = true;
-        }
-        if (state is User_No_Data_HistorygList) {
-          isHDataFound = true;
-        }
       },
       builder: (context, state) {
         return isLoading
@@ -273,75 +261,22 @@ class _UserDashBordState extends State<UserDashBord>
                   showChildOpacityTransition: false,
                   springAnimationDurationInMilliseconds: 200,
                   onRefresh: () async {
-                    context.read<UserDashBloc>().add(GetUserBookingList());
-                    context.read<UserDashBloc>().add(GetUserHistoryList());
+                    context
+                        .read<UserBookingBlocBloc>()
+                        .add(GetUserBookingList());
+
+                    context
+                        .read<UserHistoryBlocBloc>()
+                        .add(GetUserHistoryList());
                   },
                   child: Center(
-                      child: _currentIndex == 0
-                          ? BlocBuilder<UserDashBloc, UserDashState>(
-                              builder: (context, state) {
-                                if (state is User_NoData_BookingList) {
-                                  print(
-                                      '++%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
-                                  return Center(
-                                    child: Text(
-                                        'Sorry! You Have No Booking ,Yet !',
-                                        style: TextStyle(
-                                          fontFamily: fontstyles.Head,
-                                          fontSize: 20,
-                                          color: Kcolor.TextB,
-                                          fontWeight: FontWeight.bold,
-                                        )),
-                                  );
-                                }
-                                if (state is GotBookingList) {
-                                  return Center(
-                                    child: UserBookingListView(
-                                      tabController: _tabController,
-                                      scrollController2: _scrollController2,
-                                      bookingItems: state.BookingList,
-                                    ),
-                                  ); // Show booking content
-                                }
-                                if (state is User_Loading_BookingList) {
-                                  return Center(
-                                    child: LoadingPage(),
-                                  );
-                                }
-
-                                // return Center(
-                                //   child: _currentIndex == 0
-
-                                //       // ? UserBookingListView(
-                                //       //     tabController: _tabController,
-                                //       //     scrollController2: _scrollController2,
-                                //       //     bookingItems: TestBooking,
-                                //       //   )
-                                //       // : UserHistoryListView(
-                                //       //     tabController: _tabController,
-                                //       //     scrollController: _scrollController,
-                                //       //     HistoryItems: TestUHistoy)
-
-                                //   isHistoryLoading
-                                //           ? LoadingPage()
-                                //           : state is User_No_Data_HistorygList
-                                //               ? Center(
-                                //                   child: Text(
-                                //                       'Sorry! You Have No Hisory ,Yet !',
-                                //                       style: TextStyle(
-                                //                         fontFamily: fontstyles.Head,
-                                //                         fontSize: 20,
-                                //                         color: Kcolor.TextB,
-                                //                         fontWeight: FontWeight.bold,
-                                //                       )),
-                                //                 )
-                                //  UserHistoryListView(
-                                //     tabController: _tabController,
-                                //     scrollController: _scrollController,
-                                //     HistoryItems:
-                                //         UserHistorybookingItems), // Show history content
-                                // );
-
+                    child: _currentIndex == 0
+                        ? BlocBuilder<UserBookingBlocBloc,
+                            UserBookingBlocState>(
+                            builder: (context, state) {
+                              if (state is User_NoData_BookingList) {
+                                print(
+                                    '++%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
                                 return Center(
                                   child:
                                       Text('Sorry! You Have No Booking ,Yet !',
@@ -352,10 +287,58 @@ class _UserDashBordState extends State<UserDashBord>
                                             fontWeight: FontWeight.bold,
                                           )),
                                 );
-                              },
-                            )
-                          : BlocBuilder<UserDashBloc, UserDashState>(
-                              builder: (context, state) {
+                              }
+                              if (state is GotBookingList) {
+                                return Center(
+                                  child: UserBookingListView(
+                                    tabController: _tabController,
+                                    scrollController2: _scrollController2,
+                                    bookingItems: state.BookingList,
+                                  ),
+                                ); // Show booking content
+                              }
+
+                              return Center(
+                                child: LoadingPage(),
+                              );
+
+                              // return Center(
+                              //   child: _currentIndex == 0
+
+                              //       // ? UserBookingListView(
+                              //       //     tabController: _tabController,
+                              //       //     scrollController2: _scrollController2,
+                              //       //     bookingItems: TestBooking,
+                              //       //   )
+                              //       // : UserHistoryListView(
+                              //       //     tabController: _tabController,
+                              //       //     scrollController: _scrollController,
+                              //       //     HistoryItems: TestUHistoy)
+
+                              //   isHistoryLoading
+                              //           ? LoadingPage()
+                              //           : state is User_No_Data_HistorygList
+                              //               ? Center(
+                              //                   child: Text(
+                              //                       'Sorry! You Have No Hisory ,Yet !',
+                              //                       style: TextStyle(
+                              //                         fontFamily: fontstyles.Head,
+                              //                         fontSize: 20,
+                              //                         color: Kcolor.TextB,
+                              //                         fontWeight: FontWeight.bold,
+                              //                       )),
+                              //                 )
+                              //  UserHistoryListView(
+                              //     tabController: _tabController,
+                              //     scrollController: _scrollController,
+                              //     HistoryItems:
+                              //         UserHistorybookingItems), // Show history content
+                              // );
+                            },
+                          )
+                        : BlocBuilder<UserHistoryBlocBloc,
+                            UserHistoryBlocState>(
+                            builder: (context, state) {
                               if (state is User_No_Data_HistorygList) {
                                 return Center(
                                   child:
@@ -376,13 +359,13 @@ class _UserDashBordState extends State<UserDashBord>
                                       HistoryItems: state.HistoryBookingList),
                                 ); // Show booking content
                               }
-                              if (state is User_LoadingHistorygList) {
-                                return Center(
-                                  child: LoadingPage(),
-                                );
-                              }
-                              return Center();
-                            })),
+
+                              return Center(
+                                child: LoadingPage(),
+                              );
+                            },
+                          ),
+                  ),
                 ),
                 bottomNavigationBar: BottomNavigationBar(
                   selectedItemColor: Kcolor.button,
@@ -517,6 +500,17 @@ class _UserDashBordState extends State<UserDashBord>
                             context,
                             MaterialPageRoute(
                                 builder: (context) => UserWallet()),
+                          );
+                        },
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.logout),
+                        title: Text('LogOut'),
+                        onTap: () async {
+                          showDialog(
+                            context: context, // Add the context parameter here
+                            builder: (context) => LogOutButton(),
                           );
                         },
                       ),

@@ -20,17 +20,7 @@ class OwnerWallet extends StatelessWidget {
     return BlocListener<PaymentBloc, PaymentState>(
       listener: (context, state) {
         if (state is PaymentInitial) {}
-        if (state is PaymentLoading) {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => const AlertDialog(
-              content: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          );
-        }
+        if (state is PaymentLoading) {}
         if (state is DoneWithdraw) {
           showDialog(
             barrierDismissible: false,
@@ -261,12 +251,12 @@ class OwnerWallet extends StatelessWidget {
                                       }
                                       final amount = int.tryParse(value);
                                       if (amount == null ||
-                                          amount > 20 &&
-                                              amount < CurrentBalence!) {
+                                          amount < 20 &&
+                                              amount < CurrentBalence) {
                                         return 'Amount must be greater than 20';
                                       }
-                                      if (amount < CurrentBalence! ||
-                                          amount > 20) {
+                                      if (amount > CurrentBalence ||
+                                          amount < 20) {
                                         return 'Amount Balance Not Enough';
                                       }
 
@@ -348,7 +338,7 @@ class PaymentSuccessDialog extends StatelessWidget {
             fit: BoxFit.cover,
           ),
           const SizedBox(height: 20),
-          Text(' $cost  * Withdraw Successful!'),
+          Text('  * Withdraw Successful!'),
         ],
       ),
       actions: [
@@ -363,6 +353,7 @@ class PaymentSuccessDialog extends StatelessWidget {
           onPressed: () {
             FocusScope.of(context).unfocus();
             Navigator.of(context).pop();
+            context.read<PaymentBloc>().add(OwnerFetchBalance());
           },
           child: Text(
             'Ok',

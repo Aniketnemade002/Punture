@@ -29,7 +29,7 @@ class _SlectScreen extends State<StatefulWidget> {
   ];
   @override
   void initState() {
-    WhoUser = Startpref?.getBool('WhoUser') ?? false;
+    WhoUser = Startpref?.getBool('WhoUser') ?? true;
     isuser = _active == 0 ? true : false;
 
     print(
@@ -183,10 +183,17 @@ class _SlectScreen extends State<StatefulWidget> {
 
                                         _active = page;
                                         WhoUser = _active == 0 ? true : false;
-                                        isuser = _active == 0 ? true : false;
 
-                                        print(_active);
-                                        print(WhoUser);
+                                        if (_active == 0) {
+                                          isuser = true;
+                                        } else {
+                                          isuser = false;
+                                        }
+
+                                        print(
+                                            ' Active Page +++++++++++++${_active}');
+                                        print(
+                                            ' +++++++ isUser  +++++++++++++${isuser}');
                                       });
                                     },
                                     itemCount: _pages.length,

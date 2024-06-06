@@ -80,6 +80,7 @@ class UserBookingDataModal extends UserBookingData {
       required super.SlotTime});
 
   factory UserBookingDataModal.fromJson(DocumentSnapshot doc) {
+    print(doc.id);
     Map json = doc.data() as Map;
     return UserBookingDataModal(
       garageName: json['garageName'] ?? '',

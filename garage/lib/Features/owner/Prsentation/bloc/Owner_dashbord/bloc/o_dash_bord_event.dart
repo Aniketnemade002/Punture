@@ -9,10 +9,6 @@ class ODashBordEvent extends Equatable {
 
 class GetOwner extends ODashBordEvent {}
 
-class GetOwnerBookingList extends ODashBordEvent {}
-
-class GetOwnerHistoryList extends ODashBordEvent {}
-
 class GetDelete_service extends ODashBordEvent {
   final String BookingId;
   final String owneruid;

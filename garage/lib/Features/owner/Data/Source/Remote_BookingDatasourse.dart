@@ -49,7 +49,7 @@ class OwnerBooingDataSourseImpl implements OwnerBookingDataSourse {
 
       CollectionReference _Bookings = _db.collection('OWNER');
       final querySnapshot =
-          await _Bookings.doc(_uid).collection('BOKINGS').get();
+          await _Bookings.doc(_uid).collection('BOOKING').get();
       print("+++++++++++++ GOT Bookings++++++++++");
 
       List<OwnerBookingModal> BookingsList = [];
@@ -75,7 +75,6 @@ class OwnerBooingDataSourseImpl implements OwnerBookingDataSourse {
   @override
   Future<List<OwnerHistoryModal>?> GetHistory() async {
     try {
-      print("+++++++++++++Getting History");
       final _uid = await _fdb.currentUser!.uid;
 
 //
@@ -131,6 +130,8 @@ class OwnerBooingDataSourseImpl implements OwnerBookingDataSourse {
       int userMobileNo,
       GeoPoint CurrentLocation) async {
     try {
+      print("+++++++++++++Getting History");
+
       final CollectionReference OwnerRefUser =
           _db.collection('OWNER').doc(owneruid).collection('HISTORY');
 
@@ -157,6 +158,7 @@ class OwnerBooingDataSourseImpl implements OwnerBookingDataSourse {
         'SlotTime': SlotTime,
         'BookingId': BookingId,
       };
+      print(_DATA.toString());
 
       OwnerRefUser.doc(HistoryID).set(_DATA, SetOptions(merge: true));
 
@@ -168,14 +170,14 @@ class OwnerBooingDataSourseImpl implements OwnerBookingDataSourse {
       await _db
           .collection('USER')
           .doc(useruid)
-          .collection('BOKINGS')
+          .collection('BOOKING')
           .doc(BookingId)
           .delete();
 
       await _db
           .collection('OWNER')
           .doc(owneruid)
-          .collection('BOKINGS')
+          .collection('BOOKING')
           .doc(BookingId)
           .delete();
 

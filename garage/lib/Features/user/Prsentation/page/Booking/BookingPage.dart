@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:garage/Features/user/Prsentation/bloc/Booking_bloc/Constant_BOOKING.dart';
 
 import 'package:garage/Features/user/Prsentation/bloc/Booking_bloc/bloc/booking_bloc.dart';
+import 'package:garage/Features/user/Prsentation/bloc/UserDash_bloc/bloc/user_dash_bloc.dart';
 import 'package:garage/Features/user/Prsentation/page/UserDash/UserDashbord.dart';
 import 'package:garage/Payment/Presentation/pages/UserWallet.dart';
 import 'package:garage/constant/Common/common.dart';
@@ -41,88 +43,79 @@ class UserBookingPage extends StatelessWidget {
       required this.CurrentLocation});
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        surfaceTintColor: Kcolor.primary,
-        centerTitle: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.elliptical(10, 20), // Rounded bottom edges
-          ),
-        ),
-        leading: Padding(
-            padding: const EdgeInsets.only(left: 0),
-            child: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.arrow_back_ios, color: Kcolor.bg),
-            )),
-        title: Text(" ISSUE ",
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              fontFamily: fontstyles.Head,
-              fontSize: 35,
-              color: Kcolor.bg,
-              fontWeight: FontWeight.bold,
-            )),
-        backgroundColor: Kcolor.primary,
-      ),
-      backgroundColor: Kcolor.primary,
-      body: BlocListener<BookingBloc, BookingState>(
-        listener: (context, state) {
-          if (state is LowBalence) {
-            showDialog(
-              context: context, // Add the context parameter here
-              builder: (context) => LowBalenceDialog(),
-            );
-          }
-          if (state is Sucsess) {
-            showDialog(
-              context: context, // Add the context parameter here
-              builder: (context) => SlotBookedDialog(),
-            );
-          }
-          if (state.status.isFailure) {
-            ScaffoldMessenger.of(context)
-                .hideCurrentSnackBar(); // Hide previous Snackbars
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                behavior: SnackBarBehavior.floating,
-                actionOverflowThreshold: 0.25,
-                padding: const EdgeInsets.all(0.5),
-                backgroundColor: const Color.fromARGB(255, 255, 17, 0),
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Somthing Went Wrong ! ',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    Icon(
-                      Icons.sms_failed,
-                      color: Kcolor.bg,
-                    )
-                  ],
-                ),
-                duration: const Duration(seconds: 2),
+    return BlocListener<BookingBloc, BookingState>(
+      listener: (context, state) {
+        if (blencelow) {
+          showDialog(
+            context: context, // Add the context parameter here
+            builder: (context) => LowBalenceDialog(),
+          );
+        }
+        if (BookingSuccess) {
+          print(' ++++++++YESSS OHHH Fuck ++++++++ ');
+          showDialog(
+            context: context, // Add the context parameter here
+            builder: (context) => SlotBookedDialog(),
+          );
+        }
+        if (BookingFaild) {
+          ScaffoldMessenger.of(context)
+              .hideCurrentSnackBar(); // Hide previous Snackbars
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              behavior: SnackBarBehavior.floating,
+              actionOverflowThreshold: 0.25,
+              padding: const EdgeInsets.all(0.5),
+              backgroundColor: const Color.fromARGB(255, 255, 17, 0),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Somthing Went Wrong ! ',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  Icon(
+                    Icons.sms_failed,
+                    color: Kcolor.bg,
+                  )
+                ],
               ),
-            );
-          }
-
-          ///
-          ///
-          ///
-          ///
-          ///
-          ///
-          ///
-          ///
-          ///
-          ///
-        },
-        child: SingleChildScrollView(
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
+        // TODO: implement listener
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          surfaceTintColor: Kcolor.primary,
+          centerTitle: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.elliptical(10, 20), // Rounded bottom edges
+            ),
+          ),
+          leading: Padding(
+              padding: const EdgeInsets.only(left: 0),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.arrow_back_ios, color: Kcolor.bg),
+              )),
+          title: Text(" ISSUE ",
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                fontFamily: fontstyles.Head,
+                fontSize: 35,
+                color: Kcolor.bg,
+                fontWeight: FontWeight.bold,
+              )),
+          backgroundColor: Kcolor.primary,
+        ),
+        backgroundColor: Kcolor.primary,
+        body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Container(
             alignment: Alignment.topCenter,
@@ -360,6 +353,7 @@ class SlotBookedDialog extends StatelessWidget {
           ),
           onPressed: () {
             FocusScope.of(context).unfocus();
+            context.read<UserDashBloc>().add(GetUser());
             Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
                 builder: (BuildContext context) => UserDashBord(),
@@ -420,6 +414,7 @@ class LowBalenceDialog extends StatelessWidget {
           ),
           onPressed: () {
             FocusScope.of(context).unfocus();
+            context.read<UserDashBloc>().add(GetUser());
             Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
                 builder: (BuildContext context) => UserWallet(),

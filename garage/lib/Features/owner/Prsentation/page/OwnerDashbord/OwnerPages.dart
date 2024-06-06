@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garage/Features/owner/Data/ModalImpl/OwnerBookingModalImpl.dart';
 import 'package:garage/Features/owner/Data/ModalImpl/OwnerHistoryModalImpl.dart';
+import 'package:garage/Features/owner/Prsentation/bloc/OwnerBooking_bloc/owner_booking_bloc_bloc.dart';
+import 'package:garage/Features/owner/Prsentation/bloc/OwnerHistory_bloc/owner_history_bloc_bloc.dart';
 import 'package:garage/Features/owner/Prsentation/bloc/Owner_dashbord/bloc/o_dash_bord_bloc.dart';
+import 'package:garage/Features/owner/Prsentation/page/OwnerDashbord/OwnerDashBord.dart';
 import 'package:garage/Features/user/Prsentation/page/UserDash/Pages.dart';
 import 'package:garage/constant/Common/common.dart';
 import 'package:garage/constant/OnBording/onbording.dart';
@@ -594,7 +597,21 @@ class DeleteButton extends StatelessWidget {
                           userMobileNo: H.userMobileNo,
                           CurrentLocation: H.CurrentLocation ?? GeoPoint(0, 0),
                         ));
-                    ;
+
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => OwnerDashBord(),
+                      ),
+                      (Route route) => false,
+                    );
+                    context.read<ODashBordBloc>().add(GetOwner());
+
+                    context
+                        .read<OwnerBookingBlocBloc>()
+                        .add(GetOwnerBookingList());
+                    context
+                        .read<OwnerHistoryBlocBloc>()
+                        .add(GetOwnerHistoryList());
                   },
                   child: const Text('Yes'),
                 ),

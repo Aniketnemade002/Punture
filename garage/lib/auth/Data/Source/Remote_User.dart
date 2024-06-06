@@ -24,12 +24,11 @@ class UserDataSourceImpl implements UserDataSource {
   final fdb = FirebaseAuth.instance;
   final db = FirebaseFirestore.instance;
 
-  final String Who = isuser == true ? 'USER' : 'OWNER';
-
   @override
   Future<LoginResponseModal?> LogIn(
       {required String email, required String password}) async {
-    print("got.");
+    String Who = isuser ? 'USER' : 'OWNER';
+    print("got.++++++++++++${isuser}");
     try {
       final userCredential = await fdb.signInWithEmailAndPassword(
         email: email,
@@ -45,9 +44,10 @@ class UserDataSourceImpl implements UserDataSource {
       print("Values got ++++++++");
       final DocumentSnapshot<Map<String, dynamic>> snap =
           await db.collection(Who).doc(Uid).get();
-      print("Values  ++++++++");
+      print("Values  Fuck ++++++++");
       if (snap.exists) {
         print("${snap.data()}");
+        print(snap.data().toString());
         final isProfileCompleted = snap.data()!['isProfileCompleted'];
 
         final result = LoginResponseModal(

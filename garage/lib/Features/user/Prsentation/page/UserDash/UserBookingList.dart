@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garage/Features/user/Data/ModalImpl/UserBookingModalIMPL.dart';
+import 'package:garage/Features/user/Prsentation/bloc/UserBooing_bloc/user_booking_bloc_bloc.dart';
 import 'package:garage/Features/user/Prsentation/bloc/UserDash_bloc/bloc/user_dash_bloc.dart';
 import 'package:garage/Features/user/Prsentation/page/Booking/getSlot.dart';
 import 'package:garage/Features/user/Prsentation/page/UserDash/Pages.dart';
@@ -22,7 +23,7 @@ class UserBookingListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<UserDashBloc, UserDashState>(
+    return BlocConsumer<UserBookingBlocBloc, UserBookingBlocState>(
       listener: (context, state) {},
       builder: (context, state) {
         return Column(

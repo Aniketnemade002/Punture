@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garage/Features/owner/Data/ModalImpl/OwnerHistoryModalImpl.dart';
+import 'package:garage/Features/owner/Prsentation/bloc/OwnerHistory_bloc/owner_history_bloc_bloc.dart';
 import 'package:garage/Features/owner/Prsentation/bloc/Owner_dashbord/bloc/o_dash_bord_bloc.dart';
 import 'package:garage/Features/owner/Prsentation/page/OwnerDashbord/OwnerPages.dart';
 import 'package:garage/Features/user/Prsentation/page/UserDash/Pages.dart';
@@ -21,7 +22,7 @@ class OwnerHistoryListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ODashBordBloc, ODashBordState>(
+    return BlocConsumer<OwnerHistoryBlocBloc, OwnerHistoryBlocState>(
       listener: (context, state) {
         // TODO: implement listener
       },

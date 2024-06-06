@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:garage/Features/user/Data/ModalImpl/UserBookingHistory.dart';
 import 'package:garage/Features/user/Prsentation/bloc/UserDash_bloc/bloc/user_dash_bloc.dart';
+import 'package:garage/Features/user/Prsentation/bloc/UserHistory_bloc/user_history_bloc_bloc.dart';
 import 'package:garage/Features/user/Prsentation/page/UserDash/Pages.dart';
 import 'package:garage/constant/constant.dart';
 import 'package:garage/constant/TextStyle/CustomText.dart';
@@ -20,7 +21,7 @@ class UserHistoryListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<UserDashBloc, UserDashState>(
+    return BlocConsumer<UserHistoryBlocBloc, UserHistoryBlocState>(
       listener: (context, state) {},
       builder: (context, state) {
         return Center(

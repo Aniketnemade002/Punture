@@ -8,6 +8,8 @@ import 'package:garage/Features/Registration/presentation/Widgets/loc.dart';
 import 'package:garage/Features/owner/Data/ModalImpl/OwnerBookingModalImpl.dart';
 import 'package:garage/Features/owner/Data/ModalImpl/OwnerHistoryModalImpl.dart';
 import 'package:garage/Features/owner/Data/ModalImpl/OwnerModalImpl.dart';
+import 'package:garage/Features/owner/Prsentation/bloc/OwnerBooking_bloc/owner_booking_bloc_bloc.dart';
+import 'package:garage/Features/owner/Prsentation/bloc/OwnerHistory_bloc/owner_history_bloc_bloc.dart';
 import 'package:garage/Features/owner/Prsentation/bloc/Owner_dashbord/bloc/o_dash_bord_bloc.dart';
 import 'package:garage/Features/owner/Prsentation/bloc/Slot_bloc/bloc/slot_bloc.dart';
 import 'package:garage/Features/owner/Prsentation/page/OwnerDashbord/OwnerBookingList.dart';
@@ -224,20 +226,6 @@ class _OwnerDashBordState extends State<OwnerDashBord>
 
           MainOwner = state.owner;
         }
-        if (state is GotBookingList) {
-          isBookingLoading = true;
-          // OwnerbookingItems = state.BookingList;
-        }
-        if (state is GotHistorygList) {
-          isHistoryLoading = true;
-          // OwnerHistorybookingItems = state.HistoryBookingList;
-        }
-        if (state is Owner_No_Data_HistorygList) {
-          isHDataFound = true;
-        }
-        if (state is Owner_NoData_BookingList) {
-          isBDataFound = true;
-        }
       },
       builder: (context, state) {
         return isLoading
@@ -297,14 +285,17 @@ class _OwnerDashBordState extends State<OwnerDashBord>
                   showChildOpacityTransition: false,
                   springAnimationDurationInMilliseconds: 400,
                   onRefresh: () async {
-                    isHistoryLoading = false;
-                    isBookingLoading = false;
-                    context.read<ODashBordBloc>().add(GetOwnerBookingList());
-                    context.read<ODashBordBloc>().add(GetOwnerHistoryList());
+                    context
+                        .read<OwnerBookingBlocBloc>()
+                        .add(GetOwnerBookingList());
+                    context
+                        .read<OwnerHistoryBlocBloc>()
+                        .add(GetOwnerHistoryList());
                   },
                   child: Center(
                       child: _currentIndex == 0
-                          ? BlocBuilder<ODashBordBloc, ODashBordState>(
+                          ? BlocBuilder<OwnerBookingBlocBloc,
+                              OwnerBookingBlocState>(
                               builder: (context, state) {
                                 if (state is Owner_No_Data_HistorygList) {
                                   print(
@@ -328,26 +319,14 @@ class _OwnerDashBordState extends State<OwnerDashBord>
                                     bookingItems: state.BookingList,
                                   )); // Show booking content
                                 }
-                                if (state is Owner_Loading_BookingList) {
-                                  return Center(
-                                    child: LoadingPage(),
-                                  );
-                                }
 
                                 return Center(
-                                  child:
-                                      Text('Sorry! You Have No Booking ,Yet !',
-                                          style: TextStyle(
-                                            fontFamily: fontstyles.Head,
-                                            fontSize: 20,
-                                            color: Kcolor.TextB,
-                                            fontWeight: FontWeight.bold,
-                                          )),
+                                  child: LoadingPage(),
                                 );
                               },
                             )
-                          : BlocBuilder<ODashBordBloc, ODashBordState>(
-                              builder: (context, state) {
+                          : BlocBuilder<OwnerHistoryBlocBloc,
+                              OwnerHistoryBlocState>(builder: (context, state) {
                               if (state is Owner_No_Data_HistorygList) {
                                 return Center(
                                   child:
@@ -368,12 +347,10 @@ class _OwnerDashBordState extends State<OwnerDashBord>
                                         bookingItems: state
                                             .HistoryBookingList)); // Show booking content
                               }
-                              if (state is Owner_LoadingHistorygList) {
-                                return Center(
-                                  child: LoadingPage(),
-                                );
-                              }
-                              return Center();
+
+                              return Center(
+                                child: LoadingPage(),
+                              );
                             })),
                 ),
                 bottomNavigationBar: BottomNavigationBar(
@@ -516,6 +493,17 @@ class _OwnerDashBordState extends State<OwnerDashBord>
                             context,
                             MaterialPageRoute(
                                 builder: (context) => OwnerWallet()),
+                          );
+                        },
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.logout),
+                        title: Text('LogOut'),
+                        onTap: () {
+                          showDialog(
+                            context: context, // Add the context parameter here
+                            builder: (context) => LogOutButton(),
                           );
                         },
                       ),

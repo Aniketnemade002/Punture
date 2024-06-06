@@ -15,8 +15,7 @@ class ODashBordBloc extends Bloc<ODashBordEvent, ODashBordState> {
   BookingRepoImpl _bookingRepoImpl = BookingRepoImpl();
   ODashBordBloc() : super(ODashBordInitial()) {
     on<GetOwner>(_GetOwner);
-    on<GetOwnerBookingList>(_GetOwnerBookingList);
-    on<GetOwnerHistoryList>(_GetOwnerHistoryList);
+
     on<InitializeBloc>(_InitializeBloc);
     on<GetDelete_service>(_GetDelete_service);
   }
@@ -81,52 +80,6 @@ class ODashBordBloc extends Bloc<ODashBordEvent, ODashBordState> {
           emit(OwnerLoadFaild());
         } else {
           emit(GotOwner(owner: r));
-        }
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  void _GetOwnerBookingList(
-    GetOwnerBookingList event,
-    Emitter<ODashBordState> emit,
-  ) async {
-    emit(Owner_Loading_BookingList());
-    try {
-      final _Result = await _bookingRepoImpl.GetBookings();
-
-      _Result.fold((l) {
-        emit(Owner_Faild_BookingList());
-        Failure.handle(l.exp);
-      }, (r) {
-        if (r == null) {
-          emit(Owner_NoData_BookingList());
-        } else {
-          emit(GotBookingList(BookingList: r));
-        }
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  void _GetOwnerHistoryList(
-    GetOwnerHistoryList event,
-    Emitter<ODashBordState> emit,
-  ) async {
-    emit(Owner_LoadingFaild_LoadingHistorygList());
-    try {
-      final _Result = await _bookingRepoImpl.GetHistory();
-
-      _Result.fold((l) {
-        emit(Owner_Faild_BookingList());
-        Failure.handle(l.exp);
-      }, (r) {
-        if (r == null) {
-          emit(Owner_NoData_BookingList());
-        } else {
-          emit(GotHistorygList(HistoryBookingList: r));
         }
       });
     } catch (e) {

@@ -338,6 +338,7 @@ class PaymentSuccessDialog extends StatelessWidget {
           onPressed: () {
             FocusScope.of(context).unfocus();
             Navigator.of(context).pop();
+            context.read<PaymentBloc>().add(UserFetchBalance());
           },
           child: Text(
             'Ok',

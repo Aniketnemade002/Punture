@@ -8,7 +8,3 @@ sealed class UserDashEvent extends Equatable {
 }
 
 class GetUser extends UserDashEvent {}
-
-class GetUserBookingList extends UserDashEvent {}
-
-class GetUserHistoryList extends UserDashEvent {}

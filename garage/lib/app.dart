@@ -33,12 +33,16 @@ import 'package:garage/Features/Registration/presentation/OwnerRegisterPages/blo
 import 'package:garage/Features/Registration/presentation/UserRegisterpages/Pages/UserRegisterScreen.dart';
 import 'package:garage/Features/Registration/presentation/UserRegisterpages/bloc/user_register_bloc.dart';
 import 'package:garage/Features/owner/Data/RepoImp/MainOwnerRepoImpl.dart';
+import 'package:garage/Features/owner/Prsentation/bloc/OwnerBooking_bloc/owner_booking_bloc_bloc.dart';
+import 'package:garage/Features/owner/Prsentation/bloc/OwnerHistory_bloc/owner_history_bloc_bloc.dart';
 import 'package:garage/Features/owner/Prsentation/bloc/Owner_dashbord/bloc/o_dash_bord_bloc.dart';
 import 'package:garage/Features/owner/Prsentation/bloc/Slot_bloc/bloc/slot_bloc.dart';
 import 'package:garage/Features/owner/Prsentation/page/OwnerDashbord/OwnerDashBord.dart';
 import 'package:garage/Features/user/Data/RepoImp/MainUserImpl.dart';
 import 'package:garage/Features/user/Prsentation/bloc/Booking_bloc/bloc/booking_bloc.dart';
+import 'package:garage/Features/user/Prsentation/bloc/UserBooing_bloc/user_booking_bloc_bloc.dart';
 import 'package:garage/Features/user/Prsentation/bloc/UserDash_bloc/bloc/user_dash_bloc.dart';
+import 'package:garage/Features/user/Prsentation/bloc/UserHistory_bloc/user_history_bloc_bloc.dart';
 import 'package:garage/Features/user/Prsentation/page/Booking/BookingPage.dart';
 import 'package:garage/Features/user/Prsentation/page/UserDash/UserDashbord.dart';
 
@@ -131,19 +135,21 @@ class _appState extends State<app> with WidgetsBindingObserver {
                 create: (_) => PaymentBloc()
                   ..add(UserFetchBalance())
                   ..add(OwnerFetchBalance())),
-            BlocProvider(
-              create: (_) => UserDashBloc()
-                ..add(GetUser())
-                ..add(GetUserBookingList())
-                ..add(GetUserHistoryList()),
-            ),
+            BlocProvider(create: (_) => UserDashBloc()..add(GetUser())),
             BlocProvider(create: (_) => BookingBloc()),
+            BlocProvider(create: (_) => ODashBordBloc()..add(GetOwner())),
             BlocProvider(
-              create: (_) => ODashBordBloc()
-                ..add(GetOwner())
-                ..add(GetOwnerBookingList())
-                ..add(GetOwnerHistoryList()),
-            ),
+                create: (_) =>
+                    UserBookingBlocBloc()..add(GetUserBookingList())),
+            BlocProvider(
+                create: (_) =>
+                    UserHistoryBlocBloc()..add(GetUserHistoryList())),
+            BlocProvider(
+                create: (_) =>
+                    OwnerBookingBlocBloc()..add(GetOwnerBookingList())),
+            BlocProvider(
+                create: (_) =>
+                    OwnerHistoryBlocBloc()..add(GetOwnerHistoryList()))
           ],
           child: appstart(
             userUid: widget.WhoUid,
