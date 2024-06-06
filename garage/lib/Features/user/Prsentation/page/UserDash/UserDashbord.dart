@@ -32,12 +32,14 @@ class UserDashBord extends StatefulWidget {
 
 class _UserDashBordState extends State<UserDashBord>
     with SingleTickerProviderStateMixin {
-  late List<UserBookingDataModal> UserbookingItems;
-  late List<UserHistoryModal> UserHistorybookingItems;
-  late MainUserModal MainUser = TestUser;
+  // late List<UserBookingDataModal> UserbookingItems;
+  // late List<UserHistoryModal> UserHistorybookingItems;
+  late MainUserModal MainUser;
   int _currentIndex = 0;
   bool _isFabVisible = true;
   bool isLoading = false;
+  bool isHDataFound = false;
+  bool isBDataFound = false;
   bool isBookingLoading = false;
   bool isHistoryLoading = false;
   final ScrollController _scrollController = ScrollController();
@@ -46,6 +48,8 @@ class _UserDashBordState extends State<UserDashBord>
 
   @override
   void initState() {
+    context.read<UserDashBloc>().add(GetUserBookingList());
+    context.read<UserDashBloc>().add(GetUserHistoryList());
     _scrollController.addListener(_onScroll);
     _scrollController2.addListener(_onScroll2);
     _tabController = TabController(length: 1, vsync: this);
@@ -91,40 +95,39 @@ class _UserDashBordState extends State<UserDashBord>
                           fontWeight: FontWeight.bold,
                         )),
                   ),
-                  // state is FeatchedGaragesLoading
-                  //     ?
+                  state is FeatchedGaragesLoading
+                      ? Container(
+                          width: double.infinity,
+                          height: MediaQuery.of(context).size.height * 0.494,
+                          decoration: BoxDecoration(
+                            color: Kcolor.bg,
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            ),
+                          ),
 
-                  Container(
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.height * 0.494,
-                    decoration: BoxDecoration(
-                      color: Kcolor.bg,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(20),
-                      ),
-                    ),
+                          padding: EdgeInsets.only(top: 2),
+                          child: LoadingPage(),
+                          //
+                          //
+                          //
+                        )
+                      : Container(
+                          width: double.infinity,
+                          height: MediaQuery.of(context).size.height * 0.494,
+                          decoration: BoxDecoration(
+                            color: Kcolor.bg,
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            ),
+                          ),
 
-                    padding: EdgeInsets.only(top: 2),
-                    child: UserVillageSelector(),
-                    //
-                    //
-                    //
-                  )
-                  // : Container(
-                  //     width: double.infinity,
-                  //     height: MediaQuery.of(context).size.height * 0.494,
-                  //     decoration: BoxDecoration(
-                  //       color: Kcolor.bg,
-                  //       borderRadius: BorderRadius.vertical(
-                  //         top: Radius.circular(20),
-                  //       ),
-                  //     ),
-                  //     padding: EdgeInsets.only(top: 2),
-                  //     child: LoadingPage()
-                  //     //
-                  //     //
-                  //     //
-                  //     ),
+                          padding: EdgeInsets.only(top: 2),
+                          child: UserVillageSelector(),
+                          //
+                          //
+                          //
+                        )
                 ],
               ),
             );
@@ -195,250 +198,341 @@ class _UserDashBordState extends State<UserDashBord>
           MainUser = state.user;
         }
 
-        if (state is GotBookingList) {
-          isBookingLoading = true;
-          UserbookingItems = state.BookingList;
-          print(
-              "+++++++++++++++++++++++++++++++++++++++++++=${state.BookingList.length}");
+        // if (state is GotBookingList) {
+        //   isBookingLoading = true;
+        //   UserbookingItems = state.BookingList;
+        //   print(
+        //       "+++++++++++++++++++++++++++++++++++++++++++=${state.BookingList.length}");
+        // }
+        // if (state is GotHistorygList) {
+        //   isHistoryLoading = true;
+        //   UserHistorybookingItems = state.HistoryBookingList;
+        // }
+        if (state is User_NoData_BookingList) {
+          isBDataFound = true;
         }
-        if (state is GotHistorygList) {
-          isHistoryLoading = true;
-          UserHistorybookingItems = state.HistoryBookingList;
+        if (state is User_No_Data_HistorygList) {
+          isHDataFound = true;
         }
       },
       builder: (context, state) {
-        return
-            //  isLoading
-            //     ?
-
-            Scaffold(
-          drawerEnableOpenDragGesture: true,
-          drawerEdgeDragWidth: 150,
-          appBar: AppBar(
-            centerTitle: true,
-            iconTheme: IconThemeData(color: Kcolor.bg),
-            surfaceTintColor: Kcolor.primary,
-            backgroundColor: Kcolor.secondary,
-            actions: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 2, 3, 2),
-                child: SizedBox(
-                  width: 80,
-                  height: 80,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(
-                        50,
-                      ), // Half of the width or height for a perfect circle
+        return isLoading
+            ? Scaffold(
+                drawerEnableOpenDragGesture: true,
+                drawerEdgeDragWidth: 150,
+                appBar: AppBar(
+                  centerTitle: true,
+                  iconTheme: IconThemeData(color: Kcolor.bg),
+                  surfaceTintColor: Kcolor.primary,
+                  backgroundColor: Kcolor.secondary,
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 2, 3, 2),
+                      child: SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              50,
+                            ), // Half of the width or height for a perfect circle
+                          ),
+                          child: Container(
+                            color: Kcolor.secondary,
+                            // Adjust padding if needed
+                            padding: const EdgeInsets.all(2),
+                            child: isuser == true
+                                ? Lottie.asset(
+                                    'assets/images/Animation/user/travell.json',
+                                  )
+                                : Lottie.asset(
+                                    'assets/images/Animation/Garage/owner.json',
+                                  ),
+                          ),
+                        ),
+                      ),
                     ),
-                    child: Container(
-                      color: Kcolor.secondary,
-                      // Adjust padding if needed
-                      padding: const EdgeInsets.all(2),
-                      child: isuser == true
-                          ? Lottie.asset(
-                              'assets/images/Animation/user/travell.json',
-                            )
-                          : Lottie.asset(
-                              'assets/images/Animation/Garage/owner.json',
-                            ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-            title: Text(_currentIndex == 0 ? 'Puncture' : 'History',
-                style: TextStyle(
-                  fontFamily: fontstyles.Head,
-                  fontSize: 30,
-                  color: Kcolor.bg,
-                  fontWeight: FontWeight.bold,
-                )),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.elliptical(6, 7), // Rounded bottom edges
-              ),
-            ),
-          ),
-          body: LiquidPullToRefresh(
-            height: 70,
-            color: Kcolor.secondary,
-            backgroundColor: Kcolor.bg,
-            showChildOpacityTransition: false,
-            springAnimationDurationInMilliseconds: 200,
-            onRefresh: () async {
-              // context.read<UserDashBloc>().add(GetUserBookingList());
-              // context.read<UserDashBloc>().add(GetUserHistoryList());
-            },
-            child: Center(
-                child: _currentIndex == 0
-                    ? LoadingPage()
-                    : UserHistoryListView(
-                        tabController: _tabController,
-                        scrollController: _scrollController,
-                        HistoryItems: TestUHistoy)
-
-                // ? isBookingLoading
-                //     ? UserBookingListView(
-                //         tabController: _tabController,
-                //         scrollController2: _scrollController2,
-                //         bookingItems: TestBooking,
-                //       )
-                //     : LoadingPage() // Show booking content
-                // : isHistoryLoading
-                // ? UserHistoryListView(
-                //     scrollController: _scrollController,
-                //     HistoryItems: TestUHistoy)
-                // : LoadingPage(), // Show history content
-                ),
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            selectedItemColor: Kcolor.button,
-            currentIndex: _currentIndex,
-            onTap: _onTabTapped,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.book),
-                label: 'Booking',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.history),
-                label: 'History',
-              ),
-            ],
-          ),
-          floatingActionButton: _isFabVisible
-              ? SizedBox(
-                  width: 80,
-                  height: 80,
-                  child: FittedBox(
-                    child: FloatingActionButton(
-                      backgroundColor: Kcolor.button,
-                      onPressed: () => safeOnPressed(context, () {
-                        _showBottomSheet(context);
-                      }),
-                      child: Icon(
-                        Icons.add,
+                  ],
+                  title: Text(_currentIndex == 0 ? 'Puncture' : 'History',
+                      style: TextStyle(
+                        fontFamily: fontstyles.Head,
+                        fontSize: 30,
                         color: Kcolor.bg,
-                      ),
-                      shape: CircleBorder(),
+                        fontWeight: FontWeight.bold,
+                      )),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      bottom: Radius.elliptical(6, 7), // Rounded bottom edges
                     ),
                   ),
-                )
-              : null,
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
-          drawer: Drawer(
-            surfaceTintColor: Kcolor.bg,
-            backgroundColor: Kcolor.bg,
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                DrawerHeader(
-                  curve: Curves.fastOutSlowIn,
-                  decoration: BoxDecoration(
-                    color: Kcolor.primary,
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.shield,
-                            size: 30,
-                            color: Kcolor.bg,
-                          ),
-                          SizedBox(
-                            width: 240,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Text(
-                                ' ${MainUser.name}', // Text next to the icon
-                                style: TextStyle(
-                                  color: Kcolor.bg,
-                                  fontFamily: fontstyles.Gpop,
-                                  fontWeight: FontWeight.w200,
-                                  fontSize: 30,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.email,
-                            size: 20,
-                            color: Kcolor.bg,
-                          ),
-                          SizedBox(
-                            width: 250,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Text(
-                                ' ${MainUser.email} : ', // Text next to the icon
-                                style: TextStyle(
-                                  color: Kcolor.bg,
-                                  fontFamily: fontstyles.Gpop,
-                                  fontWeight: FontWeight.w200,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.phone,
-                            size: 20,
-                            color: Kcolor.bg,
-                          ),
-                          Text(
-                            ' Ph No. : ${MainUser.mobileNo} ', // Text next to the icon
-                            style: TextStyle(
+                ),
+                body: LiquidPullToRefresh(
+                  height: 70,
+                  color: Kcolor.secondary,
+                  backgroundColor: Kcolor.bg,
+                  showChildOpacityTransition: false,
+                  springAnimationDurationInMilliseconds: 200,
+                  onRefresh: () async {
+                    context.read<UserDashBloc>().add(GetUserBookingList());
+                    context.read<UserDashBloc>().add(GetUserHistoryList());
+                  },
+                  child: Center(
+                      child: _currentIndex == 0
+                          ? BlocBuilder<UserDashBloc, UserDashState>(
+                              builder: (context, state) {
+                                if (state is User_NoData_BookingList) {
+                                  print(
+                                      '++%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+                                  return Center(
+                                    child: Text(
+                                        'Sorry! You Have No Booking ,Yet !',
+                                        style: TextStyle(
+                                          fontFamily: fontstyles.Head,
+                                          fontSize: 20,
+                                          color: Kcolor.TextB,
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                  );
+                                }
+                                if (state is GotBookingList) {
+                                  return Center(
+                                    child: UserBookingListView(
+                                      tabController: _tabController,
+                                      scrollController2: _scrollController2,
+                                      bookingItems: state.BookingList,
+                                    ),
+                                  ); // Show booking content
+                                }
+                                if (state is User_Loading_BookingList) {
+                                  return Center(
+                                    child: LoadingPage(),
+                                  );
+                                }
+
+                                // return Center(
+                                //   child: _currentIndex == 0
+
+                                //       // ? UserBookingListView(
+                                //       //     tabController: _tabController,
+                                //       //     scrollController2: _scrollController2,
+                                //       //     bookingItems: TestBooking,
+                                //       //   )
+                                //       // : UserHistoryListView(
+                                //       //     tabController: _tabController,
+                                //       //     scrollController: _scrollController,
+                                //       //     HistoryItems: TestUHistoy)
+
+                                //   isHistoryLoading
+                                //           ? LoadingPage()
+                                //           : state is User_No_Data_HistorygList
+                                //               ? Center(
+                                //                   child: Text(
+                                //                       'Sorry! You Have No Hisory ,Yet !',
+                                //                       style: TextStyle(
+                                //                         fontFamily: fontstyles.Head,
+                                //                         fontSize: 20,
+                                //                         color: Kcolor.TextB,
+                                //                         fontWeight: FontWeight.bold,
+                                //                       )),
+                                //                 )
+                                //  UserHistoryListView(
+                                //     tabController: _tabController,
+                                //     scrollController: _scrollController,
+                                //     HistoryItems:
+                                //         UserHistorybookingItems), // Show history content
+                                // );
+
+                                return Center(
+                                  child:
+                                      Text('Sorry! You Have No Booking ,Yet !',
+                                          style: TextStyle(
+                                            fontFamily: fontstyles.Head,
+                                            fontSize: 20,
+                                            color: Kcolor.TextB,
+                                            fontWeight: FontWeight.bold,
+                                          )),
+                                );
+                              },
+                            )
+                          : BlocBuilder<UserDashBloc, UserDashState>(
+                              builder: (context, state) {
+                              if (state is User_No_Data_HistorygList) {
+                                return Center(
+                                  child:
+                                      Text('Sorry! You Have No Hisory ,Yet !',
+                                          style: TextStyle(
+                                            fontFamily: fontstyles.Head,
+                                            fontSize: 20,
+                                            color: Kcolor.TextB,
+                                            fontWeight: FontWeight.bold,
+                                          )),
+                                );
+                              }
+                              if (state is GotHistorygList) {
+                                return Center(
+                                  child: UserHistoryListView(
+                                      tabController: _tabController,
+                                      scrollController: _scrollController,
+                                      HistoryItems: state.HistoryBookingList),
+                                ); // Show booking content
+                              }
+                              if (state is User_LoadingHistorygList) {
+                                return Center(
+                                  child: LoadingPage(),
+                                );
+                              }
+                              return Center();
+                            })),
+                ),
+                bottomNavigationBar: BottomNavigationBar(
+                  selectedItemColor: Kcolor.button,
+                  currentIndex: _currentIndex,
+                  onTap: _onTabTapped,
+                  items: const [
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.book),
+                      label: 'Booking',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.history),
+                      label: 'History',
+                    ),
+                  ],
+                ),
+                floatingActionButton: _isFabVisible
+                    ? SizedBox(
+                        width: 80,
+                        height: 80,
+                        child: FittedBox(
+                          child: FloatingActionButton(
+                            backgroundColor: Kcolor.button,
+                            onPressed: () => safeOnPressed(context, () {
+                              _showBottomSheet(context);
+                              context.read<BookingBloc>().add(initial());
+                            }),
+                            child: Icon(
+                              Icons.add,
                               color: Kcolor.bg,
-                              fontFamily: fontstyles.Gpop,
-                              fontWeight: FontWeight.w200,
-                              fontSize: 15,
                             ),
+                            shape: CircleBorder(),
                           ),
-                        ],
+                        ),
+                      )
+                    : null,
+                floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerDocked,
+                drawer: Drawer(
+                  surfaceTintColor: Kcolor.bg,
+                  backgroundColor: Kcolor.bg,
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: [
+                      DrawerHeader(
+                        curve: Curves.fastOutSlowIn,
+                        decoration: BoxDecoration(
+                          color: Kcolor.primary,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.shield,
+                                  size: 30,
+                                  color: Kcolor.bg,
+                                ),
+                                SizedBox(
+                                  width: 240,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Text(
+                                      ' ${MainUser.name}', // Text next to the icon
+                                      style: TextStyle(
+                                        color: Kcolor.bg,
+                                        fontFamily: fontstyles.Gpop,
+                                        fontWeight: FontWeight.w200,
+                                        fontSize: 30,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.email,
+                                  size: 20,
+                                  color: Kcolor.bg,
+                                ),
+                                SizedBox(
+                                  width: 250,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Text(
+                                      ' ${MainUser.email} : ', // Text next to the icon
+                                      style: TextStyle(
+                                        color: Kcolor.bg,
+                                        fontFamily: fontstyles.Gpop,
+                                        fontWeight: FontWeight.w200,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.phone,
+                                  size: 20,
+                                  color: Kcolor.bg,
+                                ),
+                                Text(
+                                  ' Ph No. : ${MainUser.mobileNo} ', // Text next to the icon
+                                  style: TextStyle(
+                                    color: Kcolor.bg,
+                                    fontFamily: fontstyles.Gpop,
+                                    fontWeight: FontWeight.w200,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.wallet),
+                        title: Text('Wallet'),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserWallet()),
+                          );
+                        },
+                      ),
+                      Divider(),
+                      ListTile(
+                        leading: Icon(Icons.error_outline_outlined),
+                        title: Text('About'),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
                       ),
                     ],
                   ),
                 ),
-                ListTile(
-                  leading: Icon(Icons.wallet),
-                  title: Text('Wallet'),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => UserWallet()),
-                    );
-                  },
-                ),
-                Divider(),
-                ListTile(
-                  leading: Icon(Icons.error_outline_outlined),
-                  title: Text('About'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-        // : MainLoadingPage();
+              )
+            : MainLoadingPage();
       },
     );
   }
@@ -451,6 +545,7 @@ class UserVillageSelector extends StatefulWidget {
 
 class _UserVillageSelectorState extends State<UserVillageSelector> {
   late bool _selected = false;
+
   late String _Village = '';
   @override
   Widget build(BuildContext context) {
@@ -492,6 +587,9 @@ class _UserVillageSelectorState extends State<UserVillageSelector> {
                     )),
           );
         }
+        if (state is FeatchedGaragesLoading) {
+          LoadingPage();
+        }
 
         ///
         ///
@@ -501,59 +599,82 @@ class _UserVillageSelectorState extends State<UserVillageSelector> {
         ///
         ///
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SearchVillageButton(onSelectionDone: (selectedVillage) {
-            print(selectedVillage);
-            if (selectedVillage != null) {
-              _Village = selectedVillage;
-              setState(() {
-                _selected = true;
-              });
-            }
-          }),
-          _selected
-              ? SizedBox(
-                  width: 127,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Kcolor.Fbutton,
-                        shadowColor: Kcolor.button,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(7)),
-                        )),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => GaragePage(
-                                    Garages: TestGarages,
-                                  )));
-                      // context
-                      //     .read<BookingBloc>()
-                      //     .add(GetGarages(VillageName: _Village));
-                    },
+      child: BlocBuilder<BookingBloc, BookingState>(
+        builder: (context, state) {
+          return state is NoDataGarage
+              ? Center(
+                  child: SizedBox(
                     child: Row(
                       children: [
                         Icon(
-                          Icons.search,
-                          color: Kcolor.bg,
+                          Icons.info,
+                          size: 18,
+                          color: Kcolor.button,
                         ),
                         Text(
-                          'Search',
-                          style: TextStyle(
-                            fontFamily: fontstyles.Gpop,
-                            fontSize: 15,
-                            color: Kcolor.bg,
-                          ),
+                          ' Sorry! No Garages Are Available At This Location!',
+                          style: TextStyle(fontFamily: fontstyles.Gpop),
                         ),
                       ],
                     ),
                   ),
                 )
-              : SizedBox.shrink(),
-        ],
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SearchVillageButton(onSelectionDone: (selectedVillage) {
+                      print(selectedVillage);
+                      if (selectedVillage != null) {
+                        _Village = selectedVillage;
+                        setState(() {
+                          _selected = true;
+                        });
+                      }
+                    }),
+                    _selected
+                        ? SizedBox(
+                            width: 127,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Kcolor.Fbutton,
+                                  shadowColor: Kcolor.button,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(7)),
+                                  )),
+                              onPressed: () {
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) => GaragePage(
+                                //               Garages: TestGarages,
+                                //             )));
+                                context
+                                    .read<BookingBloc>()
+                                    .add(GetGarages(VillageName: _Village));
+                              },
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.search,
+                                    color: Kcolor.bg,
+                                  ),
+                                  Text(
+                                    'Search',
+                                    style: TextStyle(
+                                      fontFamily: fontstyles.Gpop,
+                                      fontSize: 15,
+                                      color: Kcolor.bg,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                  ],
+                );
+        },
       ),
     );
   }

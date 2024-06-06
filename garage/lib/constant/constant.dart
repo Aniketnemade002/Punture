@@ -54,6 +54,7 @@ late GeoPoint? GetgeoPoint;
 late String? GetVillage;
 late int CurrentBalence;
 final MainKey = GlobalKey<NavigatorState>();
+GeoPoint? CurrentLOC;
 
 final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 

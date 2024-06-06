@@ -17,7 +17,14 @@ class ODashBordBloc extends Bloc<ODashBordEvent, ODashBordState> {
     on<GetOwner>(_GetOwner);
     on<GetOwnerBookingList>(_GetOwnerBookingList);
     on<GetOwnerHistoryList>(_GetOwnerHistoryList);
+    on<InitializeBloc>(_InitializeBloc);
     on<GetDelete_service>(_GetDelete_service);
+  }
+  void _InitializeBloc(
+    InitializeBloc event,
+    Emitter<ODashBordState> emit,
+  ) async {
+    emit(Initial());
   }
 
   void _GetDelete_service(
@@ -94,13 +101,9 @@ class ODashBordBloc extends Bloc<ODashBordEvent, ODashBordState> {
         Failure.handle(l.exp);
       }, (r) {
         if (r == null) {
-          emit(Owner_Faild_BookingList());
+          emit(Owner_NoData_BookingList());
         } else {
-          if (r == []) {
-            emit(Owner_NoData_BookingList());
-          } else {
-            emit(GotBookingList(BookingList: r));
-          }
+          emit(GotBookingList(BookingList: r));
         }
       });
     } catch (e) {
@@ -121,13 +124,9 @@ class ODashBordBloc extends Bloc<ODashBordEvent, ODashBordState> {
         Failure.handle(l.exp);
       }, (r) {
         if (r == null) {
-          emit(Owner_Faild_BookingList());
+          emit(Owner_NoData_BookingList());
         } else {
-          if (r == []) {
-            emit(Owner_LoadingNo_Data_HistorygList());
-          } else {
-            emit(GotHistorygList(HistoryBookingList: r));
-          }
+          emit(GotHistorygList(HistoryBookingList: r));
         }
       });
     } catch (e) {

@@ -97,7 +97,7 @@ class GetGarageContainer extends StatelessWidget {
       },
       builder: (context, state) {
         return Container(
-          height: 175,
+          height: 179,
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
@@ -117,24 +117,24 @@ class GetGarageContainer extends StatelessWidget {
                   ///
                   ///
                   ///
-                  ///
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SlotPage(
-                          Slots: TestSlots,
-                          Name: Name,
-                          address: address,
-                          ownername: ownername,
-                          GarageLocation: GarageLocation,
-                          CurrentLocation: CurrentLocation,
-                          villagename: villagename,
-                          phone_number: phone_number,
-                          Remaning_slot: Remaning_slot,
-                          Cost: Cost,
-                          garageUid: garageUid),
-                    ),
-                  );
+                  // ///
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => SlotPage(
+                  //         Slots: TestSlots,
+                  //         Name: Name,
+                  //         address: address,
+                  //         ownername: ownername,
+                  //         GarageLocation: GarageLocation,
+                  //         CurrentLocation: CurrentLocation,
+                  //         villagename: villagename,
+                  //         phone_number: phone_number,
+                  //         Remaning_slot: Remaning_slot,
+                  //         Cost: Cost,
+                  //         garageUid: garageUid),
+                  //   ),
+                  // );
 
                   ///
                   ///
@@ -142,7 +142,7 @@ class GetGarageContainer extends StatelessWidget {
                   ///
                   ///
 
-                  // context.read<BookingBloc>().add(GetSlot(OwnerId: garageUid));
+                  context.read<BookingBloc>().add(GetSlot(OwnerId: garageUid));
                 },
                 child: Container(
                   width: double.infinity,
@@ -164,7 +164,7 @@ class GetGarageContainer extends StatelessWidget {
                       Row(
                         children: [
                           SizedBox(
-                            width: 242,
+                            width: 232,
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Text(
@@ -212,7 +212,7 @@ class GetGarageContainer extends StatelessWidget {
                         children: [
                           Icon(Icons.engineering),
                           SizedBox(
-                            width: 252,
+                            width: 242,
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Text(
@@ -227,7 +227,7 @@ class GetGarageContainer extends StatelessWidget {
                             ),
                           ),
                           SizedBox(
-                            width: 22,
+                            width: 12,
                           ),
                           SizedBox(
                             height: 30,
@@ -323,7 +323,7 @@ class GetGarageContainer extends StatelessWidget {
                     ),
                     TextSpan(
                       text:
-                          ' ${GeoDistance.distanceBetween(CurrentLocation.latitude, CurrentLocation.longitude, GarageLocation.latitude, GarageLocation.longitude)}', // Text next to the icon
+                          ' ${GeoDistance.distanceBetween(CurrentLocation.latitude, CurrentLocation.longitude, GarageLocation.latitude, GarageLocation.longitude).toStringAsFixed(1)}', // Text next to the icon
                       style: TextStyle(
                         color: Kcolor.secondary,
                         fontFamily: fontstyles.Gpop,

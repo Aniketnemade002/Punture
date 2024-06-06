@@ -129,18 +129,21 @@ class _appState extends State<app> with WidgetsBindingObserver {
             BlocProvider(create: (_) => UserRegisterBloc()),
             BlocProvider(
                 create: (_) => PaymentBloc()
-                  ..add(isuser ? UserFetchBalance() : OwnerFetchBalance())),
-            BlocProvider(create: (_) => UserDashBloc()
-                // ..add(GetUser())
-                // ..add(GetUserBookingList())
-                // ..add(GetUserHistoryList()),
-                ),
+                  ..add(UserFetchBalance())
+                  ..add(OwnerFetchBalance())),
+            BlocProvider(
+              create: (_) => UserDashBloc()
+                ..add(GetUser())
+                ..add(GetUserBookingList())
+                ..add(GetUserHistoryList()),
+            ),
             BlocProvider(create: (_) => BookingBloc()),
-            BlocProvider(create: (_) => ODashBordBloc()
-                // ..add(GetOwner())
-                // ..add(GetOwnerBookingList())
-                // ..add(GetOwnerHistoryList()),
-                ),
+            BlocProvider(
+              create: (_) => ODashBordBloc()
+                ..add(GetOwner())
+                ..add(GetOwnerBookingList())
+                ..add(GetOwnerHistoryList()),
+            ),
           ],
           child: appstart(
             userUid: widget.WhoUid,
@@ -241,7 +244,7 @@ class _appstartState extends State<appstart> {
 
                 if (state.status == AuthenticationStatus.unauthenticated) {
                   _navigator.push(MaterialPageRoute(
-                      builder: (BuildContext context) => UserDashBord()));
+                      builder: (BuildContext context) => SelectScreen()));
                 }
 
                 if (state.status == AuthenticationStatus.unknown) {
@@ -354,7 +357,7 @@ class _appstartState extends State<appstart> {
                   } else {
                     print('Golure Golure');
                     _navigator.push(MaterialPageRoute(
-                        builder: (BuildContext context) => UserDashBord()));
+                        builder: (BuildContext context) => SelectScreen()));
                   }
                 }
               },

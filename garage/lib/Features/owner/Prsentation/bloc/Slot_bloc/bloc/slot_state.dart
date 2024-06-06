@@ -17,11 +17,11 @@ class SlotAddFailure extends SlotState {}
 
 class SlotAddSucsess extends SlotState {}
 
-class GetLastSlot extends SlotState {
-  final DateTime LastTimeDate;
+class GotLastSlot extends SlotState {
+  final DateTime SlotTimeDate;
 
-  const GetLastSlot(this.LastTimeDate);
+  const GotLastSlot(this.SlotTimeDate);
 
   @override
-  List<Object> get props => [LastTimeDate];
+  List<Object> get props => [SlotTimeDate];
 }

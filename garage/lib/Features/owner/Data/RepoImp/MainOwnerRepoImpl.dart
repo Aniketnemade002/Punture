@@ -29,7 +29,7 @@ class BookingRepoImpl implements BookingRepo {
   Future<Either<Fail, List<OwnerBookingModal>?>> GetBookings() async {
     try {
       final result = await _ownerBooingDataSourseImpl.GetBookings();
-      if (result == []) {
+      if (result == null) {
         return right(result);
       }
 

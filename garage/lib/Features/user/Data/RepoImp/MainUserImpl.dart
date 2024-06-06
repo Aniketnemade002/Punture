@@ -30,9 +30,10 @@ class UserBookingDataRepoImpl implements UserBookingsDataRepo {
   @override
   Future<Either<Fail, List<UserBookingDataModal>?>> GetBookings() async {
     try {
-      print('+++++++++++++++Getting Bookings++');
+      print('+++++++++++++++++++ Booking Requested MIddele Repo +++++++');
       final result = await _userBookingDataSourseImpl.GetBookings();
-      if (result == []) {
+
+      if (result == null) {
         return right(result);
       }
 
@@ -50,7 +51,7 @@ class UserBookingHistoryRepoImpl implements UserBookingHistoryRepo {
   Future<Either<Fail, List<UserHistoryModal>?>> GetHistory() async {
     try {
       final result = await _userBookingDataSourseImpl.GetHistory();
-      if (result == []) {
+      if (result == null) {
         return right(result);
       }
 

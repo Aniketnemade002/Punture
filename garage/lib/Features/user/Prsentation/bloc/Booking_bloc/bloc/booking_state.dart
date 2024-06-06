@@ -133,3 +133,5 @@ class NoDataSlot extends BookingState {}
 class Sucsess extends BookingState {}
 
 class LowBalence extends BookingState {}
+
+class initializ extends BookingState {}

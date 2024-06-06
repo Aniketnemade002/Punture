@@ -40,7 +40,7 @@ class OwnerHistoryListView extends StatelessWidget {
               child: TabBarView(
                 controller: tabController,
                 children: [
-                  state is Owner_LoadingNo_Data_HistorygList
+                  state is Owner_No_Data_HistorygList
                       ? Center(
                           child: Text('Sorry! You Have No Hisory ,Yet !',
                               style: TextStyle(

@@ -23,35 +23,37 @@ class UserHistoryListView extends StatelessWidget {
     return BlocConsumer<UserDashBloc, UserDashState>(
       listener: (context, state) {},
       builder: (context, state) {
-        return Column(
-          children: [
-            TabBar(
-              controller: tabController,
-              indicatorColor: Kcolor.secondary,
-              labelColor: Kcolor.button,
-              tabs: [
-                Tab(text: 'Your Bookings'),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
+        return Center(
+          child: Column(
+            children: [
+              TabBar(
                 controller: tabController,
-                children: [
-                  state is User_No_Data_HistorygList
-                      ? Center(
-                          child: Text('Sorry! You Have No Hisory ,Yet !',
-                              style: TextStyle(
-                                fontFamily: fontstyles.Head,
-                                fontSize: 20,
-                                color: Kcolor.TextB,
-                                fontWeight: FontWeight.bold,
-                              )),
-                        )
-                      : _buildHistoryListView(HistoryItems, scrollController),
+                indicatorColor: Kcolor.secondary,
+                labelColor: Kcolor.button,
+                tabs: [
+                  Tab(text: 'Your History'),
                 ],
               ),
-            ),
-          ],
+              Expanded(
+                child: TabBarView(
+                  controller: tabController,
+                  children: [
+                    state is User_No_Data_HistorygList
+                        ? Center(
+                            child: Text('Sorry! You Have No Hisory ,Yet !',
+                                style: TextStyle(
+                                  fontFamily: fontstyles.Head,
+                                  fontSize: 20,
+                                  color: Kcolor.TextB,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          )
+                        : _buildHistoryListView(HistoryItems, scrollController),
+                  ],
+                ),
+              ),
+            ],
+          ),
         );
       },
     );

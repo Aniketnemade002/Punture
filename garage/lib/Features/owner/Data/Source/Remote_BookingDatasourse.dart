@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:garage/Features/owner/Data/ModalImpl/OwnerBookingModalImpl.dart';
 import 'package:garage/Features/owner/Data/ModalImpl/OwnerHistoryModalImpl.dart';
+import 'package:garage/constant/constant.dart';
 import 'package:garage/core/Error/Error.dart';
 import 'package:location/location.dart';
 
@@ -37,6 +38,7 @@ class OwnerBooingDataSourseImpl implements OwnerBookingDataSourse {
   @override
   Future<List<OwnerBookingModal>?> GetBookings() async {
     try {
+      print("+++++++++++++Getting Bookings");
       final _uid = await _fdb.currentUser!.uid;
 
 //
@@ -48,24 +50,20 @@ class OwnerBooingDataSourseImpl implements OwnerBookingDataSourse {
       CollectionReference _Bookings = _db.collection('OWNER');
       final querySnapshot =
           await _Bookings.doc(_uid).collection('BOKINGS').get();
-
-      LocationData _locationData;
-      _locationData = await location.getLocation();
-      GeoPoint currentGeopoint =
-          GeoPoint(_locationData.latitude!, _locationData.longitude!);
+      print("+++++++++++++ GOT Bookings++++++++++");
 
       List<OwnerBookingModal> BookingsList = [];
       if (querySnapshot.docs.isEmpty) {
         return [];
       } else {
         for (var doc in querySnapshot.docs) {
+          print("+++++++++++++Getting Bookings   ${doc.data()}");
           if (doc.exists) {
             BookingsList.add(OwnerBookingModal.fromJson(doc));
           }
         }
 
-        BookingsList.forEach(
-            (garage) => garage.CurrentLocation = currentGeopoint);
+        BookingsList.forEach((garage) => garage.CurrentLocation = CurrentLOC);
         return BookingsList;
       }
     } catch (e) {
@@ -77,6 +75,7 @@ class OwnerBooingDataSourseImpl implements OwnerBookingDataSourse {
   @override
   Future<List<OwnerHistoryModal>?> GetHistory() async {
     try {
+      print("+++++++++++++Getting History");
       final _uid = await _fdb.currentUser!.uid;
 
 //
@@ -89,23 +88,22 @@ class OwnerBooingDataSourseImpl implements OwnerBookingDataSourse {
       final querySnapshot =
           await _Bookings.doc(_uid).collection('HISTORY').get();
 
-      LocationData _locationData;
-      _locationData = await location.getLocation();
-      GeoPoint currentGeopoint =
-          GeoPoint(_locationData.latitude!, _locationData.longitude!);
+      print("+++++++++++++Getting Got History +++++++++");
 
       List<OwnerHistoryModal> HistoryList = [];
       if (querySnapshot.docs.isEmpty) {
-        return [];
+        print(
+            "+++++++++++++Getting Got History ${querySnapshot.docs.toString()}%%%%%%%%%%%%%%%%%%%%%%%%");
+        return null;
       } else {
         for (var doc in querySnapshot.docs) {
+          print("+++++++++++++Getting Got History ${doc.data()}");
           if (doc.exists) {
             HistoryList.add(OwnerHistoryModal.fromJson(doc));
           }
         }
 
-        HistoryList.forEach(
-            (garage) => garage.CurrentLocation = currentGeopoint);
+        HistoryList.forEach((garage) => garage.CurrentLocation = CurrentLOC);
         return HistoryList;
       }
     } catch (e) {

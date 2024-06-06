@@ -50,7 +50,7 @@ class Owner_LoadingHistorygList extends ODashBordState {}
 
 class Owner_LoadingFaild_LoadingHistorygList extends ODashBordState {}
 
-class Owner_LoadingNo_Data_HistorygList extends ODashBordState {}
+class Owner_No_Data_HistorygList extends ODashBordState {}
 
 ///
 ///
@@ -79,3 +79,5 @@ class Delete_service_Loading extends ODashBordState {}
 class Delete_service_Faild extends ODashBordState {}
 
 class Delete_service_sucsess extends ODashBordState {}
+
+class Initial extends ODashBordState {}

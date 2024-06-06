@@ -52,7 +52,7 @@ class UserDashBloc extends Bloc<UserDashEvent, UserDashState> {
   ) async {
     emit(User_Loading_BookingList());
     try {
-      print('+++++++++++++++Getting Bookings');
+      print('+++++++++++++++++++ Booking Requested From User Bloc+++++++');
       final _Result = await _userBookingDataRepoImpl.GetBookings();
 
       _Result.fold((l) {
@@ -60,7 +60,9 @@ class UserDashBloc extends Bloc<UserDashEvent, UserDashState> {
         Failure.handle(l.exp);
       }, (r) {
         if (r == null) {
-          emit(User_Faild_BookingList());
+          print(
+              "++++++++++++++++++++++++++No Booking Found+++++++++++++++++++");
+          emit(User_NoData_BookingList());
         } else {
           if (r == []) {
             print(
@@ -89,7 +91,7 @@ class UserDashBloc extends Bloc<UserDashEvent, UserDashState> {
         Failure.handle(l.exp);
       }, (r) {
         if (r == null) {
-          emit(User_Faild_LoadingHistorygList());
+          emit(User_No_Data_HistorygList());
         } else {
           if (r == []) {
             emit(User_No_Data_HistorygList());

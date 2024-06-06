@@ -69,3 +69,5 @@ class GetDelete_service extends ODashBordEvent {
         CurrentLocation
       ];
 }
+
+class InitializeBloc extends ODashBordEvent {}

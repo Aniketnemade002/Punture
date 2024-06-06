@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:garage/Features/user/Data/ModalImpl/FeatchGarageModal.dart';
 import 'package:garage/Features/user/Data/ModalImpl/UserBookingHistory.dart';
 import 'package:garage/Features/user/Data/ModalImpl/UserBookingModalIMPL.dart';
+import 'package:garage/constant/constant.dart';
 import 'package:garage/core/Error/Error.dart';
 import 'package:location/location.dart';
 
@@ -16,10 +17,12 @@ abstract interface class UserBookingDataSourse {
 class UserBookingDataSourseImpl implements UserBookingDataSourse {
   final _fdb = FirebaseAuth.instance;
   final _db = FirebaseFirestore.instance;
-  Location location = Location();
+
   @override
   Future<List<UserBookingDataModal>?> GetBookings() async {
     try {
+      print('+++++++++++++++++++ Getting Booking Uid +++++++');
+
       final _uid = await _fdb.currentUser!.uid;
 
 //
@@ -27,34 +30,34 @@ class UserBookingDataSourseImpl implements UserBookingDataSourse {
 //
 //
 // /
+      print('+++++++++++++++++++ Booking Requested From Fire Store +++++++');
 
       CollectionReference _Bookings =
           _db.collection('USER').doc(_uid).collection('BOOKINGS');
       final querySnapshot = await _Bookings.get();
+
+      print('object+++++++++++++++++++=${querySnapshot.docs}');
 
 ///////
       ///|
       ///
       ///
       ///
-      LocationData _locationData;
-      _locationData = await location.getLocation();
-      GeoPoint currentGeopoint =
-          GeoPoint(_locationData.latitude!, _locationData.longitude!);
 
       List<UserBookingDataModal> BookingsList = [];
+
       if (querySnapshot.docs.isEmpty) {
         print('object+++++++++++++++++++=');
-        return [];
+        return null;
       } else {
         for (var doc in querySnapshot.docs) {
           if (doc.exists) {
+            print(doc.data());
             BookingsList.add(UserBookingDataModal.fromJson(doc));
           }
         }
 
-        BookingsList.forEach(
-            (garage) => garage.CurrentLocation = currentGeopoint);
+        BookingsList.forEach((garage) => garage.CurrentLocation = CurrentLOC);
         return BookingsList;
       }
     } catch (e) {
@@ -77,15 +80,11 @@ class UserBookingDataSourseImpl implements UserBookingDataSourse {
       final querySnapshot =
           await _Bookings.doc(_uid).collection('HISTORY').get();
 
-      LocationData _locationData;
-      _locationData = await location.getLocation();
-      GeoPoint currentGeopoint =
-          GeoPoint(_locationData.latitude!, _locationData.longitude!);
 //
 
       List<UserHistoryModal> HistoryList = [];
       if (querySnapshot.docs.isEmpty) {
-        return HistoryList;
+        return null;
       } else {
         for (var doc in querySnapshot.docs) {
           if (doc.exists) {
@@ -93,8 +92,7 @@ class UserBookingDataSourseImpl implements UserBookingDataSourse {
           }
         }
 
-        HistoryList.forEach(
-            (garage) => garage.CurrentLocation = currentGeopoint);
+        HistoryList.forEach((garage) => garage.CurrentLocation = CurrentLOC);
         return HistoryList;
       }
     } catch (e) {
@@ -113,16 +111,17 @@ class UserBookingDataSourseImpl implements UserBookingDataSourse {
 //
 //
 // /
-
+      print('++++++++++++++++++++Fetting Slots++++++++++');
       CollectionReference _Bookings = _db.collection('OWNER');
       final querySnapshot =
           await _Bookings.doc(GarageUid).collection('SLOTS').get();
 
       List<FeatchSlotImpl> TimeSlotList = [];
       if (querySnapshot.docs.isEmpty) {
-        return [];
+        return null;
       } else {
         for (var doc in querySnapshot.docs) {
+          print('++++++++++++++++++++Feted Slots++++++++++ ${doc.data()}');
           if (doc.exists) {
             TimeSlotList.add(FeatchSlotImpl.fromJson(doc));
           }

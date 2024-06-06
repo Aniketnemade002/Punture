@@ -88,3 +88,5 @@ class DiscriptionChange extends BookingEvent {
   @override
   List<Object> get props => [Discription];
 }
+
+class initial extends BookingEvent {}

@@ -68,8 +68,13 @@ class _DateTimePickerState extends State<DateTimePicker> {
           pickedDateTime.isAfter(limitDate) ||
           pickedTime.hour < 8 ||
           pickedTime.hour >= 21) {
-        InvvalidSelectionDialog(ChooseTime: pickedDateTime);
+        showDialog(
+          context: context, // Add the context parameter here
+          builder: (context) =>
+              InvvalidSelectionDialog(ChooseTime: pickedDateTime),
+        );
       } else {
+        print("+++++++++++++++++++++Send Request To Addb Slot");
         context.read<SlotBloc>().add(AddSlotRequested(pickedDateTime));
         setState(() {
           _selectedDateTime = pickedDateTime;
@@ -112,7 +117,10 @@ class _DateTimePickerState extends State<DateTimePicker> {
     return BlocListener<SlotBloc, SlotState>(
       listener: (context, state) {
         if (state is SlotAddSucsess) {
-          Slot_Add_Sucess_Dialog();
+          showDialog(
+            context: context, // Add the context parameter here
+            builder: (context) => Slot_Add_Sucess_Dialog(),
+          );
         }
       },
       child: Column(

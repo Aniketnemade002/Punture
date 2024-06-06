@@ -2,11 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:garage/Features/user/Data/ModalImpl/FeatchGarageModal.dart';
 import 'package:garage/Features/user/Domain/Entity/UserModal.dart';
+import 'package:garage/constant/constant.dart';
 import 'package:garage/core/Error/Error.dart';
 import 'package:location/location.dart';
 
 abstract interface class UserBookingRepoDataSourse {
-  Future<List<FeatchGarageMoadlImpl>> GetGarages(String Village);
+  Future<List<FeatchGarageMoadlImpl>?> GetGarages(String Village);
   Future<int> GetPin();
   Future<int> GetBalence();
   Future<bool> DoBookeSlot(
@@ -35,31 +36,32 @@ class UserBookingRepoDataSourseImpl implements UserBookingRepoDataSourse {
   final _db = FirebaseFirestore.instance;
 
   @override
-  Future<List<FeatchGarageMoadlImpl>> GetGarages(String Village) async {
+  Future<List<FeatchGarageMoadlImpl>?> GetGarages(String Village) async {
     try {
-      LocationData _locationData;
-      _locationData = await location.getLocation();
-      GeoPoint currentGeopoint =
-          GeoPoint(_locationData.latitude!, _locationData.longitude!);
 //
 //
 //
 //
 // /
-
+      print('++++++++++++++++++++Fecting Garreges++++++++++');
       CollectionReference garages = _db.collection('OWNER');
       final querySnapshot =
-          await garages.where('village', isEqualTo: Village).get();
+          await garages.where('Village', isEqualTo: Village).get();
 
       List<FeatchGarageMoadlImpl> Garages = [];
-      for (var doc in querySnapshot.docs) {
-        if (doc.exists) {
-          Garages.add(FeatchGarageMoadlImpl.fromJson(doc));
+      if (querySnapshot.docs.isEmpty) {
+        return null;
+      } else {
+        for (var doc in querySnapshot.docs) {
+          if (doc.exists) {
+            print('++++++++++++++++++++Feced Garreges++++++++++ ${doc.data()}');
+            Garages.add(FeatchGarageMoadlImpl.fromJson(doc));
+          }
         }
-      }
-      Garages.forEach((garage) => garage.currentGeopoint = currentGeopoint);
+        Garages.forEach((garage) => garage.currentGeopoint = CurrentLOC);
 
-      return Garages;
+        return Garages;
+      }
     } catch (e) {
       print("peint ${e.toString()}");
       throw Exp(e);
@@ -181,6 +183,8 @@ class UserBookingRepoDataSourseImpl implements UserBookingRepoDataSourse {
         await _db.collection('OWNER').doc(owneruid).set(
             {'NoOfSlots': FieldValue.increment(-1)}, SetOptions(merge: true));
       }
+
+      print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^${SlotID}');
 
       await SlotRef.doc(SlotID).delete();
       return true;

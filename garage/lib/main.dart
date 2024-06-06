@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:garage/app.dart';
 import 'package:garage/constant/constant.dart';
 import 'package:garage/constant/constant.dart ' as c;
 import 'package:garage/notification.dart';
+import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
@@ -87,8 +89,11 @@ Future<void> showFlutterNotification(RemoteMessage message) async {
 }
 
 void main() async {
-  print("APP Start +");
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await Future.delayed(Duration(seconds: 5));
+  print("APP Start +");
+  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   print("APP Start ++++");
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -139,11 +144,17 @@ void main() async {
       sound: true,
     );
 
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    await Future.delayed(Duration(seconds: 5));
-
     // await AppNotifications.init();
   }
+  print("GetLocation +");
+  Location location = Location();
+  LocationData _locationData;
+  print("GetLocation ++++");
+  _locationData = await location.getLocation();
+
+  CurrentLOC =
+      GeoPoint(_locationData.latitude ?? 0, _locationData.longitude ?? 0);
+  print("GetLocation ++++ ${CurrentLOC!.latitude}${CurrentLOC!.latitude}");
 
   //-----------------------------------------------------------------------------
   // Checking  firstrun // UserEntity // Uid // isProfileCompleted

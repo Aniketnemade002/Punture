@@ -13,7 +13,7 @@ abstract interface class MainUserRepo {
 }
 
 abstract interface class UserBookingSystemRepo {
-  Future<Either<Fail, List<FeatchGarageMoadlImpl>>> GetGarages(String Village);
+  Future<Either<Fail, List<FeatchGarageMoadlImpl>?>> GetGarages(String Village);
   Future<Either<Fail, List<FeatchSlotImpl>?>> GetTimeSlots(String GarageUid);
   Future<Either<Fail, int>> GetPin();
   Future<Either<Fail, int>> GetBalence();

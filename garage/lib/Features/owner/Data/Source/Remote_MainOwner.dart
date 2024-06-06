@@ -53,7 +53,8 @@ class SlotDataSource {
 
       final DocumentReference newSlotRef = SlotRef.doc();
 
-      final SlotID = SlotRef.id;
+      final SlotID = newSlotRef.id;
+      print("Slot ID++++++++++++++++++++++++ (${SlotRef})");
       // FieldValue.increment(-1)
       //
       //

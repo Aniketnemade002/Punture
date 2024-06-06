@@ -72,10 +72,16 @@ class UserBookingPage extends StatelessWidget {
       body: BlocListener<BookingBloc, BookingState>(
         listener: (context, state) {
           if (state is LowBalence) {
-            LowBalenceDialog();
+            showDialog(
+              context: context, // Add the context parameter here
+              builder: (context) => LowBalenceDialog(),
+            );
           }
-          if (state.status.isSuccess) {
-            SlotBookedDialog();
+          if (state is Sucsess) {
+            showDialog(
+              context: context, // Add the context parameter here
+              builder: (context) => SlotBookedDialog(),
+            );
           }
           if (state.status.isFailure) {
             ScaffoldMessenger.of(context)
@@ -102,13 +108,6 @@ class UserBookingPage extends StatelessWidget {
                 ),
                 duration: const Duration(seconds: 2),
               ),
-            );
-
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(
-                builder: (BuildContext context) => UserDashBord(),
-              ),
-              (Route route) => false,
             );
           }
 
@@ -196,7 +195,7 @@ class UserBookingPage extends StatelessWidget {
                     SlotID: SlotID,
                     GarageLocation: GarageLocation,
                   ),
-                  const SizedBox(height: 233),
+                  const SizedBox(height: 328),
                 ],
               ),
             ),
@@ -283,42 +282,48 @@ class _BookingSubmitButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<BookingBloc, BookingState>(
       builder: (context, state) {
-        return state.status.isInProgress
-            ? const CircularProgressIndicator()
-            : ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      state.isValid ? Kcolor.Fbutton : Kcolor.TextB,
-                  shadowColor: Kcolor.button,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(7)),
-                  ),
-                ),
-                onPressed: state.isValid
-                    ? () => safeOnPressed(context, () {
-                          FocusScope.of(context).unfocus();
+        return ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: state.isValid ? Kcolor.Fbutton : Kcolor.TextB,
+            shadowColor: Kcolor.button,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(7)),
+            ),
+          ),
+          onPressed: state.isValid
+              ? () => safeOnPressed(context, () {
+                    FocusScope.of(context).unfocus();
 
-                          print('CLICKEDD');
-                          context.read<BookingBloc>().add(AddBooking(
-                              owneruid: owneruid,
-                              garageName: garageName,
-                              ownername: ownername,
-                              OwnerMobileNo: OwnerMobileNo,
-                              serviceCost: serviceCost,
-                              GarageLocation: GarageLocation,
-                              address: address,
-                              SlotID: SlotID,
-                              SlotTime: SlotTime,
-                              CurrentLocation: CurrentLocation));
-                        })
-                    : () => print("notworking"),
-                child: Text(
+                    print('CLICKEDD');
+                    print('CLICKEDD');
+                    print('CLICKEDD');
+
+                    print(
+                        'Booking Data Is ${owneruid}      ${garageName},       ${ownername},       ${OwnerMobileNo}        ${serviceCost}        ${GarageLocation}          ${address}         ${SlotID}        ${SlotTime}            ${CurrentLocation}');
+                    context.read<BookingBloc>().add(AddBooking(
+                        owneruid: owneruid,
+                        garageName: garageName,
+                        ownername: ownername,
+                        OwnerMobileNo: OwnerMobileNo,
+                        serviceCost: serviceCost,
+                        GarageLocation: GarageLocation,
+                        address: address,
+                        SlotID: SlotID,
+                        SlotTime: SlotTime,
+                        CurrentLocation: CurrentLocation));
+                  })
+              : () => print("notworking"),
+          child: state.status.isInProgress
+              ? CircularProgressIndicator(
+                  color: Kcolor.bg,
+                )
+              : Text(
                   'Book',
                   style: TextStyle(
                       fontFamily: fontstyles.Gpop,
                       color: state.isValid ? Kcolor.bg : Kcolor.C_Under_3),
                 ),
-              );
+        );
       },
     );
   }

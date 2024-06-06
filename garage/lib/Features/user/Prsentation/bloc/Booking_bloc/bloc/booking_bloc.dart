@@ -27,6 +27,13 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     on<vehical_No_Change>(_vehical_No_Change);
     on<DiscriptionChange>(_DiscriptionChange);
     on<SelectSlot>(_SelectSlot);
+    on<initial>(_initial);
+  }
+  void _initial(
+    initial event,
+    Emitter<BookingState> emit,
+  ) {
+    emit(initializ());
   }
 
   void _SelectSlot(
@@ -76,6 +83,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     GetGarages event,
     Emitter<BookingState> emit,
   ) async {
+    print('++++++++++++++++++++Getting Garreges++++++++++');
     emit(Loading());
     try {
       final result = await _bookingSystemRepoImpl.GetGarages(event.VillageName);
@@ -84,7 +92,8 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
         Failure.handle(l.exp);
         emit(FeatchedGaragesFaild());
       }, (r) {
-        if (r == []) {
+        if (r == null) {
+          print('++++++++++++++++++++ Noooo Getting Found++++++++++');
           emit(NoDataGarage());
         } else {
           if (r != null) {
@@ -115,30 +124,40 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     UserTemp.fold((l) {
       emit(FeatchedGaragesFaild());
     }, (UserResult) async {
+      print('+++++++++++++++User Got 1 ++++++++++');
+
       if (UserResult == null) {
         emit(FeatchedGaragesFaild());
       } else {
+        emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
         emit(FeatchedGaragesLoading());
+        print('+++++++++++++++User Got 2 ++++++++++    ${UserResult.wallet}');
 
         if (UserResult.wallet < event.serviceCost) {
+          print(
+              '+++++++++++++++User Got ++++++++++ Balence Is (${UserResult.wallet} .AND ${event.serviceCost}} )');
           emit(LowBalence());
         } else {
-          if (state.isValid) {
-            emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+          if (true) {
             emit(state.copyWith(
-                owneruid: event.owneruid,
-                garageName: event.garageName,
-                ownername: event.ownername,
-                OwnerMobileNo: event.OwnerMobileNo,
-                serviceCost: event.serviceCost,
-                GarageLocation: event.GarageLocation,
-                SlotID: event.SlotID,
-                address: event.address,
-                username: UserResult.name,
-                useruid: UserResult.uid,
-                userMobileNo: UserResult.mobileNo,
-                CurrentLocation: event.CurrentLocation,
-                status: FormzSubmissionStatus.inProgress));
+              owneruid: event.owneruid,
+              garageName: event.garageName,
+              ownername: event.ownername,
+              OwnerMobileNo: event.OwnerMobileNo,
+              serviceCost: event.serviceCost,
+              GarageLocation: event.GarageLocation,
+              SlotID: event.SlotID,
+              address: event.address,
+              username: UserResult.name,
+              useruid: UserResult.uid,
+              userMobileNo: UserResult.mobileNo,
+              CurrentLocation: event.CurrentLocation,
+            ));
+            print(
+                '++++++++++++++++++++Getting BookingInfo ++++++++++ ${state.owneruid} ${state.garageName}${state.ownername}${state.OwnerMobileNo}${state.serviceCost}${state.GarageLocation}${state.address} ${event.SlotTime}${state.username}${state.SlotID}${state.useruid}${state.Discription.value.trim()}${state.Vehical_No.value.trim()}${state.userMobileNo}${state.CurrentLocation}');
+
+            print(
+                '++++++++++++++++++++Getting BookingInfo ++++++++++ ${state.owneruid} ${state.garageName}${state.ownername}${state.OwnerMobileNo}${state.serviceCost}${state.GarageLocation}${state.address} ${event.SlotTime}${state.username}${state.SlotID}${state.useruid}${state.Discription.value.trim()}${state.Vehical_No.value.trim()}${state.userMobileNo}${state.CurrentLocation}');
             try {
               final result = await _bookingSystemRepoImpl.DoBookeSlot(
                   owneruid: state.owneruid,
@@ -157,20 +176,14 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
                   userMobileNo: state.userMobileNo,
                   CurrentLocation: state.CurrentLocation);
 
-              result.fold(
-                (l) {
-                  Failure.handle(l.exp);
-                  emit(state.copyWith(status: FormzSubmissionStatus.failure));
-                },
-                (r) => r == true
-                    ? emit(
-                        state.copyWith(status: FormzSubmissionStatus.success))
-                    : emit(
-                        state.copyWith(status: FormzSubmissionStatus.failure)),
-              );
+              result.fold((l) {
+                Failure.handle(l.exp);
+                emit(state.copyWith(status: FormzSubmissionStatus.failure));
+              }, (r) {
+                print(r);
+                emit(Sucsess());
+              });
             } catch (e) {}
-          } else {
-            emit(state.copyWith(status: FormzSubmissionStatus.failure));
           }
         }
       }
@@ -183,13 +196,15 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
   ) async {
     try {
       emit(FeatchedSlotListLoading());
+      print('++++++++++++++++++++Getting Slots++++++++++');
       final result = await _bookingSystemRepoImpl.GetTimeSlots(event.OwnerId);
 
       result.fold((l) {
         Failure.handle(l.exp);
         emit(FeatchedSlotListFaild());
       }, (r) {
-        if (r == []) {
+        if (r == null) {
+          print('++++++++++++++++++++Getting Null3++++++++++');
           emit(NoDataSlot());
         } else {
           if (r != null) {

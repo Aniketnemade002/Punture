@@ -44,7 +44,6 @@ class GaragePage extends StatelessWidget {
             )),
         backgroundColor: Kcolor.primary,
       ),
-      backgroundColor: Kcolor.primary,
       body: BlocConsumer<BookingBloc, BookingState>(
         listener: (context, state) {
           if (state is FeatchedGaragesLoading) {
@@ -53,41 +52,21 @@ class GaragePage extends StatelessWidget {
           // TODO: implement listener
         },
         builder: (context, state) {
-          return SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Container(
-              alignment: Alignment.topCenter,
-              color: Kcolor.primary,
-              child: Container(
-                constraints: BoxConstraints(maxHeight: double.infinity),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30)),
-                  color: Kcolor.bg_2,
-                ),
-                alignment: Alignment.topCenter,
-                padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        child: state is NoDataGarage
-                            ? Center(
-                                child: Text("No Garages are Avalible,Sorry!",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: fontstyles.Head,
-                                      fontSize: 20,
-                                      color: Kcolor.TextB,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                              )
-                            : _builGarageList(Garages)),
-                  ],
-                ),
-              ),
-            ),
+          return Center(
+            child: state is NoDataGarage
+                ? Center(
+                    child: Text(
+                      "No Garages are Available, Sorry!",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: fontstyles.Head,
+                        fontSize: 20,
+                        color: Kcolor.TextB,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                : _builGarageList(Garages),
           );
         },
       ),

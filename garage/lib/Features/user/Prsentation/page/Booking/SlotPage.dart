@@ -66,7 +66,7 @@ class SlotPage extends StatelessWidget {
             )),
         backgroundColor: Kcolor.primary,
       ),
-      backgroundColor: Kcolor.primary,
+      backgroundColor: Kcolor.bg_2,
       body: BlocConsumer<BookingBloc, BookingState>(
         listener: (context, state) {
           if (state is FeatchedSlotListLoading) {
@@ -83,53 +83,29 @@ class SlotPage extends StatelessWidget {
           ///
         },
         builder: (context, state) {
-          return SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Container(
-              alignment: Alignment.topCenter,
-              color: Kcolor.primary,
-              child: Container(
-                constraints: BoxConstraints(maxHeight: double.infinity),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30)),
-                  color: Kcolor.bg_2,
-                ),
-                alignment: Alignment.topCenter,
-                padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        child: state is NoDataSlot
-                            ? Center(
-                                child: Text("No Slots are Avalible,Sorry!",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: fontstyles.Head,
-                                      fontSize: 20,
-                                      color: Kcolor.TextB,
-                                      fontWeight: FontWeight.bold,
-                                    )),
-                              )
-                            : _builSlotList(
-                                Slots,
-                                Name,
-                                address,
-                                ownername,
-                                GarageLocation,
-                                CurrentLocation,
-                                villagename,
-                                phone_number,
-                                Remaning_slot,
-                                Cost,
-                                garageUid)),
-                  ],
-                ),
-              ),
-            ),
-          );
+          return state is NoDataSlot
+              ? Center(
+                  child: Text("No Slots are Avalible,Sorry!",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: fontstyles.Head,
+                        fontSize: 20,
+                        color: Kcolor.TextB,
+                        fontWeight: FontWeight.bold,
+                      )),
+                )
+              : _builSlotList(
+                  Slots,
+                  Name,
+                  address,
+                  ownername,
+                  GarageLocation,
+                  CurrentLocation,
+                  villagename,
+                  phone_number,
+                  Remaning_slot,
+                  Cost,
+                  garageUid);
         },
       ),
     );

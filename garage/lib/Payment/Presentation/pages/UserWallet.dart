@@ -155,17 +155,7 @@ class UserWallet extends StatelessWidget {
             backgroundColor: Kcolor.primary,
             body: BlocListener<PaymentBloc, PaymentState>(
               listener: (context, state) {
-                if (state is PaymentLoading) {
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (context) => const AlertDialog(
-                      content: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  );
-                }
+                if (state is PaymentLoading) {}
                 if (state is PaymentSuccess) {
                   showDialog(
                     barrierDismissible: false,

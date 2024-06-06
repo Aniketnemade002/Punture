@@ -19,6 +19,8 @@ class SlotBloc extends Bloc<SlotEvent, SlotState> {
     Emitter<SlotState> emit,
   ) async {
     try {
+      print('++++++++++++++++++++Getting last Slot++++++++++++++++++++++++++');
+
       emit(SlotLoading());
       print('Clicked 1');
       final result = await _slotRepoImpl.GetLastSlot();
@@ -30,7 +32,8 @@ class SlotBloc extends Bloc<SlotEvent, SlotState> {
         emit(SlotGetFailure());
       }, (r) {
         final _result = r.toDate();
-        emit(GetLastSlot(_result));
+        emit(SlotInitial());
+        emit(GotLastSlot(_result));
       });
     } catch (e) {
       emit(SlotGetFailure());
@@ -51,6 +54,7 @@ class SlotBloc extends Bloc<SlotEvent, SlotState> {
         emit(SlotAddFailure());
       }, (r) {
         if (r) {
+          print('++++++++++++++++++Slot Addded');
           emit(SlotAddSucsess());
         } else {
           emit(SlotAddFailure());

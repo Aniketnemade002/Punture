@@ -12,7 +12,7 @@ class OwnerPaymentDataSource {
       final _UID = await _fdb.currentUser!.uid;
 
       final Result = await _db
-          .collection('USER')
+          .collection('OWNER')
           .doc(_UID)
           .set({'Wallet': Ammount}, SetOptions(merge: true));
       return true;
@@ -25,7 +25,7 @@ class OwnerPaymentDataSource {
     try {
       final _UID = await _fdb.currentUser!.uid;
 
-      final Result = await _db.collection('USER').doc(_UID).get();
+      final Result = await _db.collection('OWNER').doc(_UID).get();
 
       if (Result.exists) {
         final data = Result['Wallet'];
@@ -46,7 +46,7 @@ class UserPaymentDataSource {
     try {
       final _UID = await _fdb.currentUser!.uid;
       await _db
-          .collection('OWNER')
+          .collection('USER')
           .doc(_UID)
           .set({'Wallet': Ammount}, SetOptions(merge: true));
       return true;
@@ -59,7 +59,7 @@ class UserPaymentDataSource {
     try {
       final _UID = await _fdb.currentUser!.uid;
 
-      final Result = await _db.collection('OWNER').doc(_UID).get();
+      final Result = await _db.collection('USER').doc(_UID).get();
 
       if (Result.exists) {
         final data = Result['Wallet'];

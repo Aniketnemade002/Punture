@@ -14,7 +14,7 @@ class BookingSystemRepoImpl implements UserBookingSystemRepo {
       UserBookingRepoDataSourseImpl();
   UserBookingDataSourseImpl _userDataSourceImpl = UserBookingDataSourseImpl();
 
-  Future<Either<Fail, List<FeatchGarageMoadlImpl>>> GetGarages(
+  Future<Either<Fail, List<FeatchGarageMoadlImpl>?>> GetGarages(
       String Village) async {
     try {
       final result = await _userBookingRepoDataSourseImpl.GetGarages(Village);
